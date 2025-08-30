@@ -25,10 +25,22 @@ AI MVP应用的通用template
 │ └── layout.tsx # 根布局
 ├── components/ # [前端] 全局共享组件
 │ ├── ui/ # 基础 UI 组件 (Button, Input, Card...)
-│ └── features/ # 特定功能的业务组件 (UserProfile, ProductCard...)
+│ ├── features/ # 特定功能的业务组件 (UserProfile, ProductCard...)
+│ └── providers/ # Provider组件 (tRPC, Theme等)
 ├── lib/ # 公共库与辅助函数
 │ ├── api/ # 封装的客户端请求模块
-│ └── schema/ # [DTO] Zod schemas 定义模块
+│ ├── schema/ # [DTO] Zod schemas 定义模块
+│ │ └── hello.ts # Hello模块的输入验证schema
+│ └── trpc/ # tRPC客户端配置
+├── server/ # [后端] 服务端业务逻辑
+│ ├── trpc.ts # tRPC初始化配置
+│ └── routers/ # tRPC路由定义
+│     ├── _app.ts # 根路由
+│     └── hello.ts # Hello模块路由
+├── db/ # 数据库相关
+│ ├── db.ts # 数据库连接实例
+│ └── schema/ # 数据表定义
+│     └── hello.ts # Hello表结构
 ├── types/ # 全局 TypeScript 类型定义
 └── index.d.ts # 全局类型声明文件
 \`\`\`
@@ -55,7 +67,9 @@ AI MVP应用的通用template
 #### 4. 数据传输对象 (DTO / Schema) (`/src/lib/schema`)
 
 - **定义位置**: 所有用于前后端数据校验的 Zod Schema（可以视为 DTO）都应统一存放在 `/src/lib/schema` 模块中。
-- **用途**: 这些 Schema 用于验证 API 的请求体 (Request Body)、查询参数 (Query Params)，以及 API 的响应数据，确保数据在系统中的类型安全。
+- **用途**: 这些 Schema 用于验证 tRPC 的输入参数，确保数据在系统中的类型安全。
+- **命名规范**: 每个业务模块的 schema 应该独立成文件，如 `hello.ts`、`user.ts` 等。
+- **导出规范**: 使用对象形式组织相关的 schema，便于管理和使用。
 
 #### 5. 全局类型 (`/src/types`)
 
