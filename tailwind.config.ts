@@ -5,6 +5,7 @@ const config: Config = {
     content: [
         "./src/**/*.{js,ts,jsx,tsx,mdx}",
     ],
+    // 定义主题
     theme: {
         extend: {
             backgroundImage: {
