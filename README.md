@@ -74,3 +74,50 @@ AI MVP应用的通用template
 #### 5. 全局类型 (`/src/types`)
 
 - **定义**: 项目中通用的、非 Zod Schema 的 TypeScript 类型或接口，应定义在 `/src/types` 目录下。
+
+---
+
+## 快速开始
+
+### 1. 安装依赖
+
+```bash
+pnpm install
+```
+
+### 2. 数据库初始化
+
+本项目使用 SQLite 数据库和 Drizzle ORM。首次运行前需要初始化数据库：
+
+```bash
+# 推送数据库结构到本地数据库文件
+pnpm db:push
+
+# 可选：打开 Drizzle Studio 查看数据库
+pnpm db:studio
+```
+
+**数据库相关命令说明：**
+
+- `pnpm db:push` - 将 schema 推送到数据库（开发环境推荐）
+- `pnpm db:generate` - 生成迁移文件
+- `pnpm db:migrate` - 运行迁移文件（生产环境推荐）
+- `pnpm db:studio` - 启动 Drizzle Studio 数据库管理界面
+
+### 3. 启动开发服务器
+
+```bash
+pnpm dev
+```
+
+访问 [http://localhost:3002](http://localhost:3002) 查看应用。
+
+### 4. 项目构建
+
+```bash
+# 构建生产版本
+pnpm build
+
+# 启动生产服务器
+pnpm start
+```
