@@ -1,5 +1,5 @@
-import { router } from '../trpc';
-import { helloRouter } from './hello';
+import { router } from '../trpc'
+import { helloRouter } from './hello'
 
 /**
  * 这是tRPC的主路由
@@ -7,7 +7,7 @@ import { helloRouter } from './hello';
  */
 export const appRouter = router({
   hello: helloRouter,
-});
+})
 
 // 导出路由类型，供客户端使用
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter

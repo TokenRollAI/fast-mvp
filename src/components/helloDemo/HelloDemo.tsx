@@ -273,7 +273,7 @@ export default function HelloDemo() {
               </p>
               {!searchQuery && (
                 <p className='text-xs text-muted-foreground'>
-                  输入姓名并点击"说Hello"开始使用
+                  输入姓名并点击&quot;说Hello&quot;开始使用
                 </p>
               )}
             </div>
