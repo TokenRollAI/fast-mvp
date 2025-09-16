@@ -8,18 +8,18 @@
 
 ```json
 {
-  "printWidth": 80,           // 每行最大字符数
-  "tabWidth": 2,              // 缩进宽度
-  "useTabs": false,           // 使用空格而非 Tab
-  "semi": false,              // 不使用分号
-  "singleQuote": true,        // 使用单引号
-  "quoteProps": "as-needed",  // 仅在需要时给对象属性加引号
-  "jsxSingleQuote": true,     // JSX 中使用单引号
-  "trailingComma": "all",     // 尽可能使用尾随逗号
-  "bracketSpacing": true,     // 对象字面量的括号间加空格
-  "bracketSameLine": false,   // JSX 标签的 > 不与最后一个属性同行
-  "arrowParens": "always",    // 箭头函数总是使用括号
-  "endOfLine": "lf"           // 使用 LF 换行符
+  "printWidth": 80, // 每行最大字符数
+  "tabWidth": 2, // 缩进宽度
+  "useTabs": false, // 使用空格而非 Tab
+  "semi": false, // 不使用分号
+  "singleQuote": true, // 使用单引号
+  "quoteProps": "as-needed", // 仅在需要时给对象属性加引号
+  "jsxSingleQuote": true, // JSX 中使用单引号
+  "trailingComma": "all", // 尽可能使用尾随逗号
+  "bracketSpacing": true, // 对象字面量的括号间加空格
+  "bracketSameLine": false, // JSX 标签的 > 不与最后一个属性同行
+  "arrowParens": "always", // 箭头函数总是使用括号
+  "endOfLine": "lf" // 使用 LF 换行符
 }
 ```
 
