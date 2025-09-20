@@ -10,7 +10,7 @@ AI MVP应用的通用template
 
 ### 核心目录结构
 
-\`\`\`
+```
 /src
 ├── app/ # 路由与页面
 │ ├── (server)/ # [后端] 服务端路由 (API, webhooks, etc.)
@@ -43,7 +43,7 @@ AI MVP应用的通用template
 │     └── hello.ts # Hello表结构
 ├── types/ # 全局 TypeScript 类型定义
 └── index.d.ts # 全局类型声明文件
-\`\`\`
+```
 
 ### 规范详解
 
