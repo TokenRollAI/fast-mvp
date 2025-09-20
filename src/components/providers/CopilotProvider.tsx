@@ -12,7 +12,7 @@ const CopilotPopup = dynamic(
 
 export function CopilotProvider({ children }: { children: ReactNode }) {
   return (
-    <CopilotKit runtimeUrl='/api/copilotkit'>
+    <CopilotKit runtimeUrl='/api/copilotkit' showDevConsole={false}>
       {children}
       <CopilotPopup
         instructions='请帮助我回答问题.'
