@@ -1,0 +1,85 @@
+# Project Structure
+
+```
+  - AGENTS.md             # Agent 交互式开发的指南
+  - components.json       # shadcn/ui 配置文件
+  - docs\                 # 项目文档目录
+    - AGENTS.md           # Agent 开发指南文档
+    - copilotkit.md       # CopilotKit 相关文档
+    - magicUI.md          # Magic UI 相关文档
+    - prettier.md         # Prettier 代码格式化工具文档
+    - shadcn_radix.md     # shadcn/ui 与 Radix UI 相关文档
+    - trpc+zod.md         # tRPC 与 Zod 相关文档
+    - vercelai.md         # Vercel AI SDK 相关文档
+  - drizzle.config.ts     # Drizzle ORM 配置文件，用于数据库迁移
+  - eslint.config.mjs     # ESLint 配置文件，用于代码质量检查
+  - next-env.d.ts         # Next.js 自动生成的 TypeScript 类型定义文件
+  - next.config.ts        # Next.js 项目主配置文件
+  - package.json          # 项目依赖和脚本定义文件
+  - postcss.config.mjs    # PostCSS 配置文件，通常与 Tailwind CSS 配合使用
+  - public\               # 静态资源目录，此目录文件可直接通过根 URL 访问
+    - file.svg            # 静态 SVG 图片资源
+    - globe.svg           # 静态 SVG 图片资源
+    - next.svg            # 静态 SVG 图片资源
+    - vercel.svg          # 静态 SVG 图片资源
+    - window.svg          # 静态 SVG 图片资源
+  - README.md             # 项目介绍文件
+  - src\                  # 项目源代码主目录
+    - app\                # Next.js App Router 核心目录
+      - (pages)\          # 页面路由组，用于组织页面相关文件
+        - favicon.ico     # 网站图标
+        - globals.css     # 全局 CSS 样式文件
+        - layout.tsx      # 根布局组件，应用于所有页面
+        - page.tsx        # 根页面（首页）组件
+      - (server)\         # 服务端路由组，用于组织 API 路由
+        - api\            # API 路由目录
+          - chat\         # 使用 Vercel AI SDK 的聊天 API
+            - route.ts    # 聊天功能的路由处理器
+          - copilotkit\   # CopilotKit 相关的 API
+            - route.ts    # CopilotKit 的路由处理器
+          - trpc\         # tRPC API 路由
+            - [trpc]\     # tRPC 的动态路由处理器
+              - route.ts  # tRPC API 入口点
+    - components\         # React 组件目录
+      - chat\             # 聊天功能相关组件
+        - ClientChat.tsx  # 客户端聊天界面组件
+        - CopilotChat.tsx # 使用 CopilotKit 的聊天组件
+      - helloDemo\        # 示例 Demo 组件
+        - HelloDemo.tsx   # 一个简单的 "Hello World" 示例
+      - magicui\          # Magic UI 动画特效组件
+        - AnimatedButton.tsx # 动画按钮组件
+        - MagicShowcase.tsx  # Magic UI 特效展示组件
+        - ParticleDemo.tsx   # 粒子效果示例组件
+        - TextRevealDemo.tsx # 文字显示动画示例
+      - providers\        # React Context Provider 组件目录
+        - CopilotProvider.tsx # CopilotKit 的 Provider
+        - TrpcProvider.tsx    # tRPC 的 Provider
+      - ui\               # shadcn/ui 基础 UI 组件
+        - badge.tsx       # 徽章组件
+        - button.tsx      # 按钮组件
+        - card.tsx        # 卡片组件
+        - input.tsx       # 输入框组件
+        - label.tsx       # 标签组件
+        - table.tsx       # 表格组件
+    - db\                 # 数据库相关文件目录
+      - db.ts             # Drizzle ORM 数据库实例初始化
+      - schema\           # Drizzle ORM 数据表结构定义
+        - hello.ts        # `hello` 表的结构定义
+    - index.d.ts          # 全局 TypeScript 类型声明文件
+    - lib\                # 辅助函数、库配置等
+      - schema\           # Zod 数据校验 schema
+        - hello.ts        # `hello` 功能相关的 Zod schema
+      - trpc\             # tRPC 客户端配置
+        - client.ts       # tRPC 客户端实例
+      - utils\            # 通用工具函数
+        - utils.ts        # `shadcn/ui` 等使用的 `cn` 函数
+    - server\             # 服务端逻辑，主要用于 tRPC
+      - routers\          # tRPC 路由定义
+        - _app.ts         # tRPC 根路由
+        - hello.ts        # `hello` 功能的 tRPC 路由
+      - trpc.ts           # tRPC 服务端初始化配置
+    - types\              # 自定义 TypeScript 类型定义
+      - example.d.ts      # 示例类型定义文件
+  - tailwind.config.ts    # Tailwind CSS 配置文件
+  - tsconfig.json         # TypeScript 编译器配置文件
+```
