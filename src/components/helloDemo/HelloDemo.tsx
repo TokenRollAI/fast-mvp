@@ -156,7 +156,7 @@ export default function HelloDemo() {
 
           {/* 显示mutation结果 */}
           {sayHelloMutation.data && (
-            <Card className='bg-green-50 border-green-200'>
+            <Card className='border-primary/50 bg-primary/10'>
               <CardContent className='pt-4'>
                 <div className='flex items-center gap-2'>
                   <Badge variant='default'>成功</Badge>
@@ -173,7 +173,7 @@ export default function HelloDemo() {
 
           {/* 显示查询结果 */}
           {getCountQuery.data && selectedName && (
-            <Card className='bg-blue-50 border-blue-200'>
+            <Card className='border-primary/50 bg-primary/10'>
               <CardContent className='pt-4'>
                 <div className='flex items-center gap-2'>
                   <Badge variant='secondary'>查询结果</Badge>
@@ -190,7 +190,7 @@ export default function HelloDemo() {
 
           {/* 显示错误 */}
           {(sayHelloMutation.error || getCountQuery.error) && (
-            <Card className='bg-red-50 border-red-200'>
+            <Card className='border-primary/50  border-red-200'>
               <CardContent className='pt-4'>
                 <div className='flex items-center gap-2'>
                   <Badge variant='destructive'>错误</Badge>
