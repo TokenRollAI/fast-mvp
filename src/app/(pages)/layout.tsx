@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { TRPCProvider } from '@/components/providers/TrpcProvider'
-import { CopilotProvider } from '@/components/providers/CopilotProvider'
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -16,9 +15,7 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className='font-sans antialiased'>
-        <TRPCProvider>
-          <CopilotProvider>{children}</CopilotProvider>
-        </TRPCProvider>
+        <TRPCProvider>{children}</TRPCProvider>
       </body>
     </html>
   )

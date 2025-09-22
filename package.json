@@ -14,12 +14,10 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^2.0.11",
     "@ai-sdk/google": "^2.0.11",
+    "@ai-sdk/openai": "^2.0.11",
     "@ai-sdk/react": "^2.0.28",
-    "@copilotkit/runtime": "^1.10.4",
-    "@copilotkit/react-core": "^1.10.4",
-    "@copilotkit/react-ui": "^1.10.4",
-    "@copilotkit/shared": "^1.10.4",
     "@google/generative-ai": "^0.11.2",
     "@libsql/client": "^0.15.14",
     "@radix-ui/react-label": "^2.1.7",

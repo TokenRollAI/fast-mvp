@@ -1,23 +1,42 @@
 import { streamText } from 'ai'
-import { google } from '@ai-sdk/google'
+import { resolveLanguageModel } from '@/lib/ai/providers'
+import type { AiProvider } from '@/lib/ai/providers'
 
-// 将运行时设置为 edge，以获得最佳性能
 export const runtime = 'edge'
+
+const DEFAULT_PROVIDER: AiProvider = 'gemini'
 
 export async function POST(req: Request) {
   try {
-    const { messages } = await req.json()
+    const body = await req.json()
+    const { messages, provider, model } = body ?? {}
 
-    // 使用 streamText 调用 OpenAI API
-    const result = streamText({
-      model: google('gemini-2.0-flash-001'),
+    if (!Array.isArray(messages)) {
+      return new Response(
+        'Invalid request body: "messages" must be an array.',
+        {
+          status: 400,
+        },
+      )
+    }
+
+    const selectedProvider = (
+      typeof provider === 'string' ? provider : DEFAULT_PROVIDER
+    ) as AiProvider
+
+    if (!['gemini', 'openai', 'claude'].includes(selectedProvider)) {
+      return new Response(`Unsupported provider: ${String(provider)}`, {
+        status: 400,
+      })
+    }
+
+    const result = await streamText({
+      model: resolveLanguageModel(selectedProvider, model),
       messages,
     })
 
-    // 返回流式响应
-    return result.toTextStreamResponse()
+    return result.toAIStreamResponse()
   } catch (error) {
-    // 捕获并处理潜在的错误
     console.error('An error occurred in the chat API route:', error)
     return new Response('An internal server error occurred.', { status: 500 })
   }
