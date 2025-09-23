@@ -20,6 +20,7 @@ import {
   Shield,
   Palette,
   Code,
+  MessageCircle,
 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
@@ -173,6 +174,13 @@ export default function HomePage() {
             >
               <Link href='/magic'>
                 <AnimatedButton />
+              </Link>
+
+              <Link href='/openai'>
+                <Button className='h-12 px-6 text-base group bg-gradient-primary text-primary-foreground border-0 shadow-md hover:shadow-warm' size='lg'>
+                  体验 OpenAI 聊天
+                  <MessageCircle className='ml-2 w-4 h-4 transition-transform group-hover:scale-110' />
+                </Button>
               </Link>
 
               <Link href='/trpc'>

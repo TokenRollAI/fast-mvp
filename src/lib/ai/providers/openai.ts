@@ -1,7 +1,8 @@
-import { createOpenAI } from '@ai-sdk/openai'
+// import { createOpenAI } from '@ai-sdk/openai'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import type { LanguageModel } from 'ai'
 
-let client: ReturnType<typeof createOpenAI> | null = null
+let client: ReturnType<typeof createOpenAICompatible> | null = null
 
 const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini'
 
@@ -14,9 +15,10 @@ const getClient = () => {
       )
     }
 
-    client = createOpenAI({
+    client = createOpenAICompatible({
       apiKey,
-      baseURL: process.env.OPENAI_BASE_URL || undefined,
+      name: 'openai',
+      baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
     })
   }
 
