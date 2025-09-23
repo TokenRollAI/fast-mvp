@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge'
 import { motion } from 'framer-motion'
 import { AnimatedButton } from '@/components/magicui/AnimatedButton'
 import { TextRevealDemo } from '@/components/magicui/TextRevealDemo'
+import { MorphingText } from '@/components/ui/morphing-text'
 import {
   ChevronRight,
   Sparkles,
@@ -110,7 +111,7 @@ export default function HomePage() {
               </motion.div>
 
               <h1 className='text-6xl md:text-7xl font-bold tracking-tight'>
-                <span className='text-gradient-warm'>Fast MVP</span>
+                <MorphingText texts={['Fast MVP', 'Fast Builder']} />
               </h1>
 
               <p className='text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed'>
@@ -177,7 +178,10 @@ export default function HomePage() {
               </Link>
 
               <Link href='/openai'>
-                <Button className='h-12 px-6 text-base group bg-gradient-primary text-primary-foreground border-0 shadow-md hover:shadow-warm' size='lg'>
+                <Button
+                  className='h-12 px-6 text-base group bg-gradient-primary text-primary-foreground border-0 shadow-md hover:shadow-warm'
+                  size='lg'
+                >
                   体验 OpenAI 聊天
                   <MessageCircle className='ml-2 w-4 h-4 transition-transform group-hover:scale-110' />
                 </Button>
