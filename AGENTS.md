@@ -1,16 +1,16 @@
 # 开发指南
 
-## 1. 使用开发服务器，**而非** `npm run build`
+## 1. 使用开发服务器，**而非** `pnpm build`
 
-- 在迭代开发应用时，**请始终使用 `npm run dev`**（或 `pnpm dev`, `yarn dev` 等）。这将以开发模式启动 Next.js 并启用热重载功能。
-- **请勿在 Agent 会话中运行 `npm run build`**。运行生产构建命令会将 `.next` 文件夹切换为生产资源，这将禁用热重载，并可能使开发服务器处于不一致的状态。如果需要进行生产构建，请在交互式 Agent 工作流之外执行。
+- 在迭代开发应用时，**请始终使用 `pnpm dev`** 启动开发服务器（或 `pnpm lint --watch` 等 `pnpm` 脚本）。开发模式会启用热重载，更适合交互式调试。
+- **请勿在 Agent 会话中运行 `pnpm build`**。生产构建会覆盖 `.next` 为生产产物并禁用热重载，可能导致后续开发流程失效。若确需构建，请在 Agent 工作流之外执行。
 
 ## 2. 保持依赖同步
 
-如果您添加或更新了依赖项，请记得：
+整个项目默认使用 `pnpm`。如需安装或更新依赖，请使用 `pnpm add`/`pnpm update`，并保持 `pnpm-lock.yaml` 与 `package.json` 同步。
 
-1.  更新相应的锁文件 (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`)。
-2.  重启开发服务器，以确保 Next.js 加载最新的变更。
+1.  提交前确认 `pnpm-lock.yaml` 已更新；不要手动编辑 `package-lock.json` 或使用 `npm`/`yarn`。
+2.  依赖变更后重启开发服务器，确保 Next.js 和 Turbopack 获取最新依赖。
 
 ## 3. 编码约定
 
@@ -19,12 +19,35 @@
 
 ## 4. 常用命令回顾
 
-| 命令            | 用途                                       |
-| --------------- | ------------------------------------------ |
-| `npm run dev`   | 启动支持 HMR 的 Next.js 开发服务器。       |
-| `npm run lint`  | 运行 ESLint 检查。                         |
-| `npm run test`  | 执行测试套件（如果存在）。                 |
-| `npm run build` | **生产构建 – _请勿在 Agent 会话期间运行_** |
+| 命令          | 用途                                       |
+| ------------- | ------------------------------------------ |
+| `pnpm dev`    | 启动支持 HMR 的 Next.js 开发服务器。       |
+| `pnpm lint`   | 运行 ESLint 检查。                         |
+| `pnpm test`   | 执行测试套件（如果存在）。                 |
+| `pnpm build`  | **生产构建 – _请勿在 Agent 会话期间运行_** |
+| `pnpm format` | 执行预设的代码格式化任务。                 |
+
+## 5. AI Provider 工作流
+
+- 所有对接 Vercel AI SDK 的配置集中在 `src/lib/ai/providers`。优先通过 `resolveLanguageModel`（`index.ts`）来获取模型，而不是在业务代码中直接初始化客户端。
+- 调用时传入 `provider`（`'gemini' | 'openai' | 'claude'`）和可选的 `model` 名称，函数会自动读取 `.env.local` 中的密钥与模型覆盖值。必要环境变量：`GOOGLE_API_KEY` / `GOOGLE_MODEL`、`OPENAI_API_KEY` / `OPENAI_MODEL`、`ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL`。
+- 添加新 Provider 时，请：
+  1.  在 `src/lib/ai/providers` 下创建与现有文件相同结构的工厂函数，负责懒加载客户端并处理默认模型。
+  2.  在 `index.ts` 中更新 `AiProvider` 联合类型及 `resolveLanguageModel` 逻辑。
+  3.  在 `.env.example` 或相关文档中记录新的环境变量名称。
+- 请勿在各个组件或 Route Handler 中重复配置密钥或自定义 fetch 客户端，以避免泄露和配置漂移问题。
+
+## 6. UI 组件优先级
+
+- 新界面优先复用 `shadcn/ui` (`src/components/ui`) 与 `magicui` (`src/components/magicui`) 组件库。通过变体、组合和 Tailwind 实现设计需求，减少从零开始编写原子组件的次数。
+- 若缺少所需样式，优先使用 `pnpm dlx shadcn-ui@latest add [component]` 拉取官方模板，然后在项目内细调。仅当现有方案无法满足需求时，再考虑手写组件，并保持样式与现有规范一致。
+- 自定义样式放在对应组件文件或同级样式文件内，避免散落的全局 CSS。
+
+## 7. 数据建模守则
+
+- 未经用户明确指示，请勿新增数据库表或迁移。原型阶段优先利用内存状态、静态配置或现有 `hello` 表完成验证。
+- 当确需持久化时，先与用户确认数据结构，再使用 Drizzle 的 schema 定义与迁移命令（`pnpm db:generate` → `pnpm db:push`）。在变更获批前，避免提交未使用的表或字段。
+- 对临时数据可用 `tRPC` mock、前端状态或 KV 方案，保证快速迭代并减少迁移成本。
 
 ---
 
@@ -35,7 +58,6 @@
   - components.json       # shadcn/ui 配置文件
   - docs\                 # 项目文档目录
     - AGENTS.md           # Agent 开发指南文档
-    - copilotkit.md       # CopilotKit 相关文档
     - magicUI.md          # Magic UI 相关文档
     - prettier.md         # Prettier 代码格式化工具文档
     - shadcn_radix.md     # shadcn/ui 与 Radix UI 相关文档
@@ -65,15 +87,12 @@
         - api\            # API 路由目录
           - chat\         # 使用 Vercel AI SDK 的聊天 API
             - route.ts    # 聊天功能的路由处理器
-          - copilotkit\   # CopilotKit 相关的 API
-            - route.ts    # CopilotKit 的路由处理器
           - trpc\         # tRPC API 路由
             - [trpc]\     # tRPC 的动态路由处理器
               - route.ts  # tRPC API 入口点
     - components\         # React 组件目录
       - chat\             # 聊天功能相关组件
         - ClientChat.tsx  # 客户端聊天界面组件
-        - CopilotChat.tsx # 使用 CopilotKit 的聊天组件
       - helloDemo\        # 示例 Demo 组件
         - HelloDemo.tsx   # 一个简单的 "Hello World" 示例
       - magicui\          # Magic UI 动画特效组件
@@ -82,7 +101,6 @@
         - ParticleDemo.tsx   # 粒子效果示例组件
         - TextRevealDemo.tsx # 文字显示动画示例
       - providers\        # React Context Provider 组件目录
-        - CopilotProvider.tsx # CopilotKit 的 Provider
         - TrpcProvider.tsx    # tRPC 的 Provider
       - ui\               # shadcn/ui 基础 UI 组件
         - badge.tsx       # 徽章组件
@@ -121,17 +139,20 @@
 ## 1 shadcn/ui 组件系统
 
 ### 核心理念
+
 `shadcn/ui` 不是传统的 npm 包，而是可复制粘贴到项目中的组件代码。组件基于 Radix UI 和 Tailwind CSS 构建。
 
 ### 已集成组件
+
 - `Button` - 按钮组件，支持多种变体和尺寸
-- `Card` - 卡片容器组件 
+- `Card` - 卡片容器组件
 - `Input` - 输入框组件
 - `Label` - 标签组件
 - `Badge` - 徽章组件
 - `Table` - 表格组件
 
 ### 基本用法示例
+
 ```tsx
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -141,17 +162,17 @@ import { Badge } from '@/components/ui/badge'
 
 export default function MyComponent() {
   return (
-    <Card className="w-[350px]">
+    <Card className='w-[350px]'>
       <CardHeader>
         <CardTitle>示例表单</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="name">姓名</Label>
-          <Input id="name" placeholder="请输入姓名" />
+      <CardContent className='space-y-4'>
+        <div className='space-y-2'>
+          <Label htmlFor='name'>姓名</Label>
+          <Input id='name' placeholder='请输入姓名' />
         </div>
-        <Button className="w-full">
-          提交 <Badge variant="secondary">必填</Badge>
+        <Button className='w-full'>
+          提交 <Badge variant='secondary'>必填</Badge>
         </Button>
       </CardContent>
     </Card>
@@ -160,27 +181,32 @@ export default function MyComponent() {
 ```
 
 ### 添加新组件
+
 使用 shadcn CLI 添加新组件：
+
 ```bash
 pnpm dlx shadcn-ui@latest add [component-name]
 ```
 
 ### 工具函数 `cn`
+
 使用 `cn` 函数处理条件类名和样式合并：
+
 ```tsx
 import { cn } from '@/lib/utils/utils'
-
-<div className={cn('p-4 bg-blue-500', { 'font-bold': isActive })} />
+;<div className={cn('p-4 bg-blue-500', { 'font-bold': isActive })} />
 ```
 
 ## 2 tRPC + Zod 端到端类型安全
 
 ### 核心理念
+
 实现前后端完全类型安全的 API 调用，一次定义，全栈共享。
 
 ### 开发流程
 
 #### 1. 定义 Schema (Zod)
+
 ```typescript
 // src/lib/schema/example.ts
 import { z } from 'zod'
@@ -200,6 +226,7 @@ export type GetByIdInput = z.infer<typeof exampleInputSchema.getById>
 ```
 
 #### 2. 创建后端路由
+
 ```typescript
 // src/server/routers/example.ts
 import { publicProcedure, router } from '../trpc'
@@ -212,7 +239,7 @@ export const exampleRouter = router({
       // input 已经是类型安全的 CreateInput
       return { success: true, data: input }
     }),
-    
+
   getById: publicProcedure
     .input(exampleInputSchema.getById)
     .query(async ({ input }) => {
@@ -223,6 +250,7 @@ export const exampleRouter = router({
 ```
 
 #### 3. 前端使用
+
 ```tsx
 'use client'
 
@@ -231,14 +259,14 @@ import { trpc } from '@/lib/trpc/client'
 export default function ExampleComponent() {
   const createMutation = trpc.example.create.useMutation()
   const { data, isLoading } = trpc.example.getById.useQuery({ id: 1 })
-  
+
   const handleCreate = () => {
-    createMutation.mutate({ 
-      name: 'John', 
-      email: 'john@example.com' 
+    createMutation.mutate({
+      name: 'John',
+      email: 'john@example.com',
     })
   }
-  
+
   return (
     <div>
       {isLoading ? '加载中...' : data?.name}
@@ -250,55 +278,8 @@ export default function ExampleComponent() {
 
 ## 3 AI 功能集成
 
-### CopilotKit (推荐)
-用于构建应用感知的 AI 助手，支持与应用状态深度交互。
-
-#### 基本用法
-```tsx
-'use client'
-
-import { CopilotChat } from '@copilotkit/react-ui'
-import { useCopilotAction, useCopilotReadable } from '@copilotkit/react-core'
-
-export default function AIComponent() {
-  const [tasks, setTasks] = useState<string[]>([])
-  
-  // 让 AI 读取应用状态
-  useCopilotReadable({
-    description: '用户的任务列表',
-    value: tasks,
-  })
-  
-  // 定义 AI 可执行的操作
-  useCopilotAction({
-    name: 'addTask',
-    description: '添加新任务到列表',
-    parameters: [
-      {
-        name: 'task',
-        type: 'string',
-        description: '任务描述',
-        required: true,
-      },
-    ],
-    handler: async (args) => {
-      setTasks(prev => [...prev, args.task as string])
-    },
-  })
-  
-  return (
-    <CopilotChat
-      instructions="你是一个任务管理助手，可以帮助用户添加和管理任务。"
-      labels={{
-        title: "AI 任务助手",
-        initial: "我可以帮你管理任务，试试说'添加一个学习任务'",
-      }}
-    />
-  )
-}
-```
-
 ### Vercel AI SDK (补充)
+
 用于构建基础聊天功能和自定义 AI 交互。
 
 ```tsx
@@ -310,10 +291,10 @@ export default function ChatComponent() {
   const { messages, input, handleInputChange, handleSubmit } = useChat({
     api: '/api/chat',
   })
-  
+
   return (
     <div>
-      {messages.map(m => (
+      {messages.map((m) => (
         <div key={m.id}>
           <strong>{m.role}: </strong>
           {m.content}
@@ -321,7 +302,7 @@ export default function ChatComponent() {
       ))}
       <form onSubmit={handleSubmit}>
         <input value={input} onChange={handleInputChange} />
-        <button type="submit">发送</button>
+        <button type='submit'>发送</button>
       </form>
     </div>
   )
@@ -331,6 +312,7 @@ export default function ChatComponent() {
 ## 4 数据库操作 (Drizzle ORM)
 
 ### 基本操作
+
 ```typescript
 // src/db/schema/example.ts
 import { sql } from 'drizzle-orm'
@@ -355,16 +337,20 @@ const results = await db.select().from(exampleTable)
 ## 5 样式系统
 
 ### Tailwind CSS
+
 项目使用 Tailwind CSS 进行样式设计，配合 `cn` 函数处理动态类名。
 
 ### 代码格式化 (Prettier)
+
 项目配置了 Prettier 自动格式化：
+
 - 保存时自动格式化
 - 使用单引号
 - 不使用分号
 - 2 空格缩进
 
 ### 常用命令
+
 ```bash
 # 格式化代码
 pnpm format
@@ -378,7 +364,6 @@ pnpm db:generate  # 生成迁移文件
 pnpm db:studio    # 打开数据库管理界面
 ```
 
-
 ---
 
 # 角色 (Role)
@@ -390,15 +375,15 @@ pnpm db:studio    # 打开数据库管理界面
 1.  **核心技术栈**: 你必须精通 `Next.js` (App Router, RSC, Server Actions), `React` (Hooks, Suspense), 以及 `TypeScript`。
 2.  **API & 后端**: 你对使用 `tRPC` 构建类型安全的 API 有深入理解，并熟悉 `Zod` 进行数据校验。同时，你也熟悉 `Next.js Route Handlers` 的使用场景。
 3.  **数据库 & ORM**: 你精通 `Drizzle ORM`，并了解其与 `libSQL`/`Turso` 的集成方式。
-4.  **AI 功能集成**: 你熟悉 `Vercel AI SDK` 和 `@copilotkit/react` 的使用，能够构建复杂的 AI 聊天和智能交互功能。
+4.  **AI 功能集成**: 你熟悉 `Vercel AI SDK`的使用，能够构建复杂的 AI 聊天和智能交互功能。
 5.  **UI & 样式**: 你擅长使用 `Tailwind CSS` 和 `shadcn/ui` 构建美观、一致的界面，并能运用`magicui` `Framer Motion` 添加流畅的动画效果。
-  **生态与工具**: 你熟悉 `Turbopack`, `ESLint`, `Prettier`, `pnpm` 等现代前端工程化工具。
-7.  **编码哲学与优先级**:
+    **生态与工具**: 你熟悉 `Turbopack`, `ESLint`, `Prettier`, `pnpm` 等现代前端工程化工具。
+6.  **编码哲学与优先级**:
     - **可读性第一**: 代码首先是写给人看的。你产出的代码必须清晰、易于理解。
     - **性能第二**: 在保证可读性的前提下，追求最优的性能实践。
     - **可维护性第三**: 编写易于扩展和修改的代码。
-8.  **代码结构偏好**: 你追求代码结构的平衡与合理。**避免为了拆分而过度拆分组件或模块，也绝不能将所有逻辑揉杂在一个巨大的文件中**。你的目标是“恰到好处的模块化”。
-9.  **安全意识**: 你时刻关注前端安全，会主动规避 XSS、CSRF 等常见漏洞，不使用 `innerHTML` 等危险操作，除非被明确指示。
+7.  **代码结构偏好**: 你追求代码结构的平衡与合理。**避免为了拆分而过度拆分组件或模块，也绝不能将所有逻辑揉杂在一个巨大的文件中**。你的目标是“恰到好处的模块化”。
+8.  **安全意识**: 你时刻关注前端安全，会主动规避 XSS、CSRF 等常见漏洞，不使用 `innerHTML` 等危险操作，除非被明确指示。
 
 # 工作流程与指令 (Workflow & Instructions)
 

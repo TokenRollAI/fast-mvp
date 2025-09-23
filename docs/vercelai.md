@@ -4,20 +4,7 @@
 
 ## 1. 技术选型与定位
 
-在本项目中，我们同时集成了 `Vercel AI SDK` 和 `CopilotKit` 以满足不同的 AI 功能需求。
-
-**本项目主要推荐使用 `CopilotKit`** 作为构建 AI 助手的首选方案。`Vercel AI SDK` 则作为提供基础聊天能力和高度自定义场景下的补充。
-
-**原因**:
-
-- **`CopilotKit` (首选)**: 提供了开箱即用的 UI 组件和强大的应用交互能力（Actions & Readables），能让我们以最快速度构建功能丰富的 AI Copilot。详情请参考 `copilotkit.md` 指南。
-- **`Vercel AI SDK` (补充)**: 提供了强大的底层能力，非常适合从零开始构建一个纯粹的、流式的聊天界面。当 CopilotKit 的 high-level 抽象不适用，或者我们只需要一个简单的问答机器人时，Vercel AI SDK 是一个绝佳的选择。
-
-因此，在开始开发一个新的 AI 功能前，请优先评估是否可以使用 `CopilotKit` 来实现。
-
-## 2. 核心理念
-
-Vercel AI SDK 是一个由 Vercel 开发的开源库，旨在简化在 JavaScript 和 TypeScript 应用中构建 AI 功能（特别是聊天界面）的流程。
+在本项目中，我们集成了 `Vercel AI SDK` 以满足不同的 AI 功能需求。
 
 它的核心优势在于：
 
