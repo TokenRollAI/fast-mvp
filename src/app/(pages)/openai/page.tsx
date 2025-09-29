@@ -21,7 +21,8 @@ export default function OpenAIPage() {
           在 Fast MVP 中体验 OpenAI 聊天能力
         </h1>
         <p className='mx-auto max-w-2xl text-lg text-muted-foreground'>
-          下方的演示组件通过 Vercel AI SDK 调用你在环境变量中配置的 OpenAI 模型，展示了如何在几行代码内构建 AI 交互体验。
+          下方的演示组件通过 Vercel AI SDK 调用你在环境变量中配置的 OpenAI
+          模型，展示了如何在几行代码内构建 AI 交互体验。
         </p>
       </section>
 

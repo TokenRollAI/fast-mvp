@@ -1,22 +1,20 @@
 import { createAnthropic } from '@ai-sdk/anthropic'
 import type { LanguageModel } from 'ai'
+import { env } from '@/lib/env'
 
 let client: ReturnType<typeof createAnthropic> | null = null
 
-const DEFAULT_CLAUDE_MODEL = 'claude-3-5-sonnet-latest'
-
 const getClient = () => {
   if (!client) {
-    const apiKey = process.env.ANTHROPIC_API_KEY
-    if (!apiKey) {
+    if (!env.ANTHROPIC_API_KEY) {
       throw new Error(
         'ANTHROPIC_API_KEY is not set. Define it in your environment.',
       )
     }
 
     client = createAnthropic({
-      apiKey,
-      baseURL: process.env.ANTHROPIC_BASE_URL || undefined,
+      apiKey: env.ANTHROPIC_API_KEY,
+      baseURL: env.ANTHROPIC_BASE_URL || undefined,
     })
   }
 
@@ -30,6 +28,6 @@ const getClient = () => {
  */
 export const getClaudeModel = (model?: string): LanguageModel => {
   const selectedModel =
-    model || process.env.ANTHROPIC_MODEL || DEFAULT_CLAUDE_MODEL
+    model || env.ANTHROPIC_MODEL || 'claude-3-5-sonnet-latest'
   return getClient()(selectedModel)
 }

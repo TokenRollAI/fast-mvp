@@ -21,7 +21,17 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 5 * 1000,
+            // AI 响应不频繁变化，增加 staleTime 减少不必要的请求
+            staleTime: 60 * 1000, // 1 分钟
+            // AI API 调用成本高，失败后减少重试次数
+            retry: 1,
+            // 失败后不立即重试，避免浪费配额
+            retryDelay: (attemptIndex) =>
+              Math.min(1000 * 2 ** attemptIndex, 5000),
+          },
+          mutations: {
+            // mutation 失败后不自动重试，由用户决定
+            retry: false,
           },
         },
       }),
