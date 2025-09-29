@@ -10,6 +10,8 @@ When a user asks you to build something:
 2. **Copy > Create** - Find the closest existing pattern and adapt it
 3. **Show, don't explain** - Build working code with UI, not just API endpoints
 4. **Test as you go** - Use `pnpm dev` and verify in browser after each step
+5. **🗑️ Clean slate after learning** - Once you understand the structure, DELETE example files (`trpc/`, `magic/`, `openai/`)
+6. **🎨 Homepage is mandatory** - EVERY demo needs a beautiful landing page (`src/app/(pages)/page.tsx`)
 
 ### Example Decision Tree
 
@@ -35,7 +37,10 @@ User: "Make the UI look better"
 
 - **Project Structure**: `src/app` handles routing and pages (distinguishing between `(pages)` client views and `(server)` Route Handlers), `src/components` stores reusable UI components (prioritizing subdirectories like `ui/` and `magicui/`), `src/lib` contains utilities and AI Providers, while `src/server` and `src/db` manage tRPC and Drizzle logic. Before making changes, identify the relevant directories to maintain consistency between files and responsibilities.
 
-- **New Feature Workflow - The Fast MVP Way**:
+- **New Feature Workflow - The Fast MVP Way**: 0. **🗑️ Clean Up (2 min)**: Remove example demos after understanding structure
+  - Delete `src/app/(pages)/trpc/`, `magic/`, `openai/` if building new demo
+  - Keep `src/components/` (reusable UI) and `src/server/routers/` (as reference)
+  - This gives you a clean slate to build YOUR demo
   1. **Discovery (2 min)**: Scan existing code for similar features
      - Check `src/app/(pages)/` for page examples
      - Check `src/server/routers/` for API patterns
@@ -52,12 +57,17 @@ User: "Make the UI look better"
      - Check `pnpm dev` output for errors
      - Test happy path in browser
      - Test error cases
-  5. **Polish (5 min)**: Format and finalize
+  5. **🎨 Design Homepage (10 min)**: Make it beautiful ⚠️ REQUIRED
+     - Edit `src/app/(pages)/page.tsx` with hero section
+     - Add feature showcase with icons/cards
+     - Include demo preview or interactive element
+     - Add clear navigation to feature pages
+  6. **Polish (5 min)**: Format and finalize
      - Run `pnpm format`
      - Add loading states if missing
      - Improve error messages
 
-  **Total: ~25 minutes per feature** (vs hours from scratch)
+  **Total: ~40 minutes per demo** (vs hours from scratch)
 
 - **Development Process**: Always iterate using `pnpm dev` or other watch scripts. Do not run `pnpm build` within a session. Prefer project-specific scripts when executing commands.
 
@@ -179,6 +189,125 @@ pnpm dlx shadcn@latest add [component-name]
 # 3. Import and use in your page
 ```
 
+## ⚠️ CRITICAL RULES (Always Follow These)
+
+### Rule 0: Use Theme System, Not Hardcoded Colors 🎨
+
+**NEVER write hardcoded colors:**
+
+```tsx
+// ❌ BAD - Will get rejected in code review
+<div className="bg-[#ba7123]">
+<div className="bg-blue-500">
+<div style={{ background: 'linear-gradient(to right, #f00, #00f)' }}>
+```
+
+**ALWAYS use theme classes:**
+
+```tsx
+// ✅ GOOD - Use semantic theme classes
+<div className="bg-primary text-primary-foreground">
+<div className="bg-gradient-warm">
+<h1 className="text-gradient-primary">
+<div className="shadow-warm glow-primary">
+```
+
+**Why?** The project has a complete theme system in `globals.css` with:
+
+- Semantic colors: `primary`, `secondary`, `accent`, `muted`, `card`, etc.
+- Pre-built gradients: `bg-gradient-primary`, `bg-gradient-warm`, etc.
+- Text gradients: `text-gradient-*`
+- Effects: `shadow-warm`, `glow-primary`, etc.
+
+**Quick reference:**
+
+- Hero sections: `bg-gradient-warm` or `bg-gradient-earth`
+- Cards: `bg-card text-card-foreground`
+- Buttons: Use `Button` component (already themed)
+- Accents: `bg-accent text-accent-foreground`
+- Headings: `text-gradient-primary` for fancy titles
+
+### Rule 1: Clean Slate After Learning 🗑️
+
+**When to delete example files:**
+
+```bash
+# After you understand the project structure (read 2-3 example files)
+# DELETE the example demos:
+rm -rf src/app/(pages)/trpc
+rm -rf src/app/(pages)/magic
+rm -rf src/app/(pages)/openai
+
+# Keep these for reference:
+# ✅ src/components/ui/ (shadcn components)
+# ✅ src/components/magicui/ (animation components)
+# ✅ src/server/routers/ (reference for API patterns)
+# ✅ src/lib/schema/ (reference for validation patterns)
+```
+
+**Why?** Give users a clean canvas for THEIR demo, not cluttered with template examples.
+
+### Rule 2: Beautiful Homepage is Mandatory 🎨
+
+**EVERY demo MUST include:**
+
+```typescript
+// src/app/(pages)/page.tsx
+
+export default function HomePage() {
+  return (
+    <div className="min-h-screen bg-background">
+      {/* 1. Hero Section - Use theme gradients! */}
+      <section className="bg-gradient-warm py-20 px-6">
+        <h1 className="text-gradient-primary text-5xl font-bold">
+          Your Amazing Demo Name
+        </h1>
+        <p className="text-muted-foreground text-xl mt-4">
+          Clear description of what this does
+        </p>
+      </section>
+
+      {/* 2. Feature Cards - Use theme colors! */}
+      <section className="container mx-auto py-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="shadow-warm">
+          <CardHeader>
+            <CardTitle className="text-primary">Feature 1</CardTitle>
+          </CardHeader>
+          <CardContent className="text-muted-foreground">
+            Description
+          </CardContent>
+        </Card>
+        {/* Repeat for Feature 2, 3 */}
+      </section>
+
+      {/* 3. Demo Preview with glow effect */}
+      <section className="container mx-auto py-16">
+        <div className="bg-card rounded-lg p-8 shadow-warm-lg glow-warm">
+          <YourMainFeatureComponent />
+        </div>
+      </section>
+
+      {/* 4. CTA with themed button */}
+      <section className="text-center pb-20">
+        <Button size="lg" className="shadow-warm">
+          Try it now
+        </Button>
+      </section>
+    </div>
+  )
+}
+```
+
+**Required elements:**
+
+- ✅ Hero with `bg-gradient-*` (not hardcoded gradients!)
+- ✅ 3-4 feature `Card` components with `text-primary` titles
+- ✅ Demo preview with `shadow-warm` or `glow-*` effects
+- ✅ CTA button (use `Button` component, already themed)
+- ✅ All colors from theme system
+
+**Why?** First impressions matter. Users judge your demo in 3 seconds.
+
 ## 📊 Success Metrics
 
 When you've done a good job:
@@ -189,6 +318,9 @@ When you've done a good job:
 - ✅ Passes `pnpm lint` and `pnpm format`
 - ✅ User can test it in browser immediately
 - ✅ Code looks similar to existing patterns in the repo
+- ✅ **Example demos are DELETED** (clean slate for user)
+- ✅ **Homepage is beautiful** (hero + features + demo + CTA)
+- ✅ **NO hardcoded colors** - All using theme classes (`bg-primary`, `bg-gradient-warm`, etc.)
 
 When you need to slow down:
 

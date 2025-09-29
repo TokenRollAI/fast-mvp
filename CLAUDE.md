@@ -38,6 +38,9 @@ When the user asks to build a new feature, follow this pattern:
 - **Copy > Create** - Reuse existing components and patterns
 - **Type Safety** - Use tRPC + Zod for end-to-end validation
 - **Show, Don't Tell** - Build UI demos for every feature
+- **Clean Slate** - Once you understand the structure, DELETE example files and start fresh
+- **Beautiful First Impression** - Every demo MUST have an attractive homepage (modify `src/app/(pages)/page.tsx`)
+- **Use Theme Variables** - NEVER hardcode colors like `#ba7123` or `bg-blue-500`, use theme classes instead
 
 ## Commands
 
@@ -120,11 +123,97 @@ src/components/
 
 **Component strategy:** Prioritize using existing shadcn/ui or magicui components (`pnpm dlx shadcn@latest add [component]`) before building custom UI.
 
+## 🎨 Theme System - Use This, Not Hardcoded Colors!
+
+The project has a **comprehensive theme system** defined in `src/app/(pages)/globals.css`. **ALWAYS use theme classes instead of hardcoded colors.**
+
+### ❌ DON'T Do This:
+
+```tsx
+// BAD - Hardcoded colors
+<div className="bg-[#ba7123] text-[#f0f0f0]">
+<div className="bg-blue-500 text-white">
+<div style={{ background: 'linear-gradient(135deg, #ba7123, #523737)' }}>
+```
+
+### ✅ DO This Instead:
+
+**Semantic Colors (Recommended):**
+
+```tsx
+// Use semantic theme colors
+<div className="bg-primary text-primary-foreground">      // Main brand color
+<div className="bg-secondary text-secondary-foreground">  // Secondary color
+<div className="bg-accent text-accent-foreground">        // Accent color
+<div className="bg-muted text-muted-foreground">          // Muted/subdued
+<div className="bg-card text-card-foreground">            // Card backgrounds
+<div className="bg-destructive text-destructive-foreground"> // Error states
+```
+
+**Gradients (Pre-defined):**
+
+```tsx
+// Use built-in gradient classes
+<div className="bg-gradient-primary">     // Main brand gradient
+<div className="bg-gradient-secondary">   // Secondary gradient
+<div className="bg-gradient-accent">      // Accent gradient
+<div className="bg-gradient-warm">        // Warm gradient
+<div className="bg-gradient-cool">        // Cool gradient
+<div className="bg-gradient-earth">       // Earth tones
+<div className="bg-gradient-dark">        // Dark gradient
+
+// Text gradients
+<h1 className="text-gradient-primary">Gradient Text</h1>
+<h1 className="text-gradient-warm">Warm Text</h1>
+```
+
+**Effects (Shadows & Glows):**
+
+```tsx
+<div className="shadow-warm">           // Warm shadow
+<div className="shadow-warm-lg">        // Larger warm shadow
+<div className="glow-primary">          // Primary glow effect
+<div className="glow-warm">             // Warm glow
+```
+
+### Available Theme Tokens
+
+**Colors:**
+
+- `background` / `foreground` - Page background and text
+- `primary` / `primary-foreground` - Main brand color (#ba7123)
+- `secondary` / `secondary-foreground` - Secondary color (#554560)
+- `accent` / `accent-foreground` - Accent highlights
+- `muted` / `muted-foreground` - Subdued elements
+- `card` / `card-foreground` - Card backgrounds
+- `border` / `input` / `ring` - Form elements
+
+**Gradients:** `primary`, `secondary`, `accent`, `warm`, `cool`, `earth`, `dark`
+
+**Effects:** `shadow-warm`, `glow-primary`, `glow-warm`, `glow-accent`, `glow-cool`
+
+### Why This Matters
+
+1. **Consistency** - Entire app uses same color palette
+2. **Maintainability** - Change theme in one place (globals.css)
+3. **Accessibility** - Guaranteed contrast ratios
+4. **Speed** - No thinking about colors, just pick semantic name
+
 ## Development Workflow
 
 ### 🎯 Step-by-Step: Adding a New Feature
 
 **Example: User wants "AI-powered image generator"**
+
+**Step 0: Clean Up Examples (2 min)** ⚠️ IMPORTANT
+
+```bash
+# Once you understand the structure, remove example pages
+rm -rf src/app/(pages)/trpc
+rm -rf src/app/(pages)/magic
+rm -rf src/app/(pages)/openai
+# Keep the structure, remove the demos
+```
 
 1. **Create the page** (5 min)
 
@@ -178,7 +267,19 @@ src/components/
    - Follow the pattern in `OpenAIChatDemo.tsx`
    - Add loading states and error handling
 
-**Total time: ~40 minutes from idea to working feature**
+6. **Design Beautiful Homepage** (10 min) 🎨 REQUIRED
+   ```tsx
+   // Edit src/app/(pages)/page.tsx
+   // Use theme classes, NOT hardcoded colors!
+   <section className="bg-gradient-warm py-20">  // NOT bg-[#ba7123]
+     <h1 className="text-gradient-primary">Demo Name</h1>
+   </section>
+   <Card className="shadow-warm">  // NOT shadow-xl
+     <CardTitle className="text-primary">Feature</CardTitle>
+   </Card>
+   ```
+
+**Total time: ~50 minutes from idea to production-ready demo**
 
 ### 🔥 Common Patterns (Copy These!)
 
