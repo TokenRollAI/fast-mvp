@@ -3,6 +3,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion } from 'framer-motion'
 
+/**
+ * Particle Interface
+ *
+ * Represents a single animated particle in the canvas
+ */
 interface Particle {
   x: number
   y: number
@@ -11,6 +16,28 @@ interface Particle {
   size: number
   opacity: number
 }
+
+/**
+ * ParticleDemo Component
+ *
+ * An interactive particle animation system with connected nodes.
+ * Features include:
+ * - 100 animated particles with physics-based movement
+ * - Dynamic particle connections based on proximity
+ * - Responsive canvas that adapts to container size
+ * - Smooth animations using requestAnimationFrame
+ * - Theme-integrated color scheme
+ *
+ * Performance optimizations:
+ * - Uses Canvas API for efficient rendering
+ * - Boundary detection prevents particles from escaping
+ * - Connection distance threshold (100px) limits computational overhead
+ *
+ * @example
+ * ```tsx
+ * <ParticleDemo />
+ * ```
+ */
 
 export function ParticleDemo() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -93,18 +120,24 @@ export function ParticleDemo() {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    // 绘制粒子
+    // 获取主题前景色 (从 CSS 变量)
+    const foregroundColor =
+      getComputedStyle(document.documentElement)
+        .getPropertyValue('--foreground')
+        .trim() || '#f0f0f0'
+
+    // 绘制粒子 - 使用主题色
     particles.forEach((particle) => {
       ctx.save()
       ctx.globalAlpha = particle.opacity
-      ctx.fillStyle = '#ffffff'
+      ctx.fillStyle = foregroundColor
       ctx.beginPath()
       ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
       ctx.fill()
       ctx.restore()
     })
 
-    // 绘制连线
+    // 绘制连线 - 使用主题色
     particles.forEach((particle, i) => {
       particles.slice(i + 1).forEach((otherParticle) => {
         const distance = Math.sqrt(
@@ -115,7 +148,7 @@ export function ParticleDemo() {
         if (distance < 100) {
           ctx.save()
           ctx.globalAlpha = (1 - distance / 100) * 0.2
-          ctx.strokeStyle = '#ffffff'
+          ctx.strokeStyle = foregroundColor
           ctx.lineWidth = 1
           ctx.beginPath()
           ctx.moveTo(particle.x, particle.y)
@@ -130,17 +163,19 @@ export function ParticleDemo() {
   return (
     <div
       ref={containerRef}
-      className='relative flex h-96 w-full items-center justify-center overflow-hidden rounded-lg border bg-black'
+      className='relative flex h-96 w-full items-center justify-center overflow-hidden rounded-lg border bg-background shadow-warm'
+      role='img'
+      aria-label='Interactive particle animation with MagicUI branding'
     >
       <motion.span
-        className='pointer-events-none z-10 whitespace-pre-wrap bg-gradient-to-b from-white to-gray-300 bg-clip-text text-center text-6xl font-semibold leading-none text-transparent'
+        className='pointer-events-none z-10 whitespace-pre-wrap text-gradient-warm text-center text-6xl font-semibold leading-none'
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1, delay: 0.5 }}
       >
         MagicUI
       </motion.span>
-      <canvas ref={canvasRef} className='absolute inset-0' />
+      <canvas ref={canvasRef} className='absolute inset-0' aria-hidden='true' />
     </div>
   )
 }

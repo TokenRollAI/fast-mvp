@@ -10,65 +10,9 @@ import {
 import { AnimatedButton } from './AnimatedButton'
 import { ParticleDemo } from './ParticleDemo'
 import { TextRevealDemo } from './TextRevealDemo'
+import { Meteors } from './Meteors'
+import { RetroGrid } from './RetroGrid'
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
-
-// 流星雨组件
-function Meteors({ number }: { number: number }) {
-  const [meteors, setMeteors] = useState<number[]>([])
-
-  useEffect(() => {
-    setMeteors(Array.from({ length: number }, (_, i) => i))
-  }, [number])
-
-  return (
-    <>
-      {meteors.map((meteor) => (
-        <motion.span
-          key={meteor}
-          className='absolute h-0.5 w-0.5 rotate-[215deg] animate-pulse rounded-[9999px] bg-slate-500 shadow-[0_0_0_1px_#ffffff10]'
-          style={{
-            top: Math.random() * 100 + '%',
-            left: Math.random() * 100 + '%',
-            animationDelay: Math.random() * 8 + 's',
-            animationDuration: Math.random() * 8 + 2 + 's',
-          }}
-          animate={{
-            x: [0, -400],
-            y: [0, 400],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: Math.random() * 8 + 2,
-            repeat: Infinity,
-            delay: Math.random() * 8,
-          }}
-        />
-      ))}
-    </>
-  )
-}
-
-// 复古网格组件
-function RetroGrid() {
-  return (
-    <div className='pointer-events-none absolute inset-0 overflow-hidden [mask-image:radial-gradient(ellipse_at_center,black,transparent)]'>
-      <div className='absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,rgba(255,255,255,0.1)_50%,transparent_100%)] bg-[length:20px_20px] animate-pulse' />
-      <div className='absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(255,255,255,0.1)_50%,transparent_100%)] bg-[length:20px_20px] animate-pulse' />
-      <motion.div
-        className='absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/20 to-transparent'
-        animate={{
-          x: [-100, 1000],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
-    </div>
-  )
-}
 
 export function MagicShowcase() {
   return (
@@ -79,7 +23,7 @@ export function MagicShowcase() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <h1 className='text-4xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent'>
+        <h1 className='text-4xl font-bold mb-4 text-gradient-primary'>
           MagicUI 组件展示
         </h1>
         <p className='text-lg text-muted-foreground'>
@@ -145,17 +89,17 @@ export function MagicShowcase() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.5 }}
       >
-        <Card className='relative overflow-hidden min-h-[200px] bg-black/50'>
+        <Card className='relative overflow-hidden min-h-[200px] bg-card/50 backdrop-blur-sm shadow-warm'>
           <CardHeader>
-            <CardTitle className='text-white'>复古网格背景</CardTitle>
-            <CardDescription className='text-gray-300'>
+            <CardTitle className='text-foreground'>复古网格背景</CardTitle>
+            <CardDescription className='text-muted-foreground'>
               科技感十足的网格背景效果
             </CardDescription>
           </CardHeader>
           <CardContent className='py-16'>
             <div className='text-center relative z-10'>
               <motion.h3
-                className='text-2xl font-bold mb-2 text-white'
+                className='text-2xl font-bold mb-2 text-foreground'
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
@@ -163,7 +107,7 @@ export function MagicShowcase() {
                 Welcome to the Future
               </motion.h3>
               <motion.p
-                className='text-gray-300'
+                className='text-muted-foreground'
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.8, delay: 0.8 }}

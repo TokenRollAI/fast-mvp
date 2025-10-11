@@ -1,3 +1,22 @@
+/**
+ * Fast MVP - Homepage
+ *
+ * A modern, animated homepage showcasing the Fast MVP template features.
+ * This page demonstrates:
+ * - Theme-based color system (no hardcoded colors)
+ * - MagicUI animated components (Meteors, RetroGrid, TextReveal, etc.)
+ * - Framer Motion animations
+ * - Responsive design patterns
+ * - Feature showcase cards
+ *
+ * Theme System:
+ * All colors use semantic theme classes from globals.css:
+ * - Gradients: bg-gradient-{primary|secondary|accent|warm|cool|dark|earth}
+ * - Text gradients: text-gradient-{primary|secondary|accent|warm|cool|earth}
+ * - Effects: shadow-warm, glow-primary, etc.
+ * - Semantic colors: primary, secondary, accent, muted, card, etc.
+ */
+
 'use client'
 
 import Link from 'next/link'
@@ -14,6 +33,8 @@ import { motion } from 'framer-motion'
 import { AnimatedButton } from '@/components/magicui/AnimatedButton'
 import { TextRevealDemo } from '@/components/magicui/TextRevealDemo'
 import { MorphingText } from '@/components/ui/morphing-text'
+import { Meteors } from '@/components/magicui/Meteors'
+import { RetroGrid } from '@/components/magicui/RetroGrid'
 import {
   ChevronRight,
   Sparkles,
@@ -23,64 +44,6 @@ import {
   Code,
   MessageCircle,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
-
-// 流星雨组件
-function Meteors({ number }: { number: number }) {
-  const [meteors, setMeteors] = useState<number[]>([])
-
-  useEffect(() => {
-    setMeteors(Array.from({ length: number }, (_, i) => i))
-  }, [number])
-
-  return (
-    <>
-      {meteors.map((meteor) => (
-        <motion.span
-          key={meteor}
-          className='absolute h-0.5 w-0.5 rotate-[215deg] rounded-[9999px] bg-slate-500 shadow-[0_0_0_1px_#ffffff10]'
-          style={{
-            top: Math.random() * 100 + '%',
-            left: Math.random() * 100 + '%',
-            animationDelay: Math.random() * 8 + 's',
-            animationDuration: Math.random() * 8 + 2 + 's',
-          }}
-          animate={{
-            x: [0, -400],
-            y: [0, 400],
-            opacity: [0, 1, 0],
-          }}
-          transition={{
-            duration: Math.random() * 8 + 2,
-            repeat: Infinity,
-            delay: Math.random() * 8,
-          }}
-        />
-      ))}
-    </>
-  )
-}
-
-// 复古网格组件
-function RetroGrid() {
-  return (
-    <div className='pointer-events-none absolute inset-0 overflow-hidden [mask-image:radial-gradient(ellipse_at_center,black,transparent)]'>
-      <div className='absolute inset-0 bg-[linear-gradient(to_right,transparent_0%,rgba(255,255,255,0.1)_50%,transparent_100%)] bg-[length:20px_20px] animate-pulse' />
-      <div className='absolute inset-0 bg-[linear-gradient(to_bottom,transparent_0%,rgba(255,255,255,0.1)_50%,transparent_100%)] bg-[length:20px_20px] animate-pulse' />
-      <motion.div
-        className='absolute inset-0 bg-gradient-to-r from-transparent via-purple-500/20 to-transparent'
-        animate={{
-          x: [-100, 1000],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: 'linear',
-        }}
-      />
-    </div>
-  )
-}
 
 export default function HomePage() {
   return (
@@ -110,7 +73,7 @@ export default function HomePage() {
                 AI MVP 应用模板
               </motion.div>
 
-              <h1 className='text-6xl md:text-7xl font-bold tracking-tight'>
+              <h1 className='font-display text-6xl md:text-7xl font-bold tracking-tight'>
                 <MorphingText texts={['Fast MVP', 'Fast Builder']} />
               </h1>
 
@@ -211,7 +174,7 @@ export default function HomePage() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className='text-4xl md:text-5xl font-bold mb-6'>
+              <h2 className='font-display text-4xl md:text-5xl font-bold mb-6'>
                 <span className='text-gradient-warm'>强大的功能特性</span>
               </h2>
               <p className='text-xl text-muted-foreground max-w-3xl mx-auto'>
@@ -232,7 +195,7 @@ export default function HomePage() {
                   <CardHeader className='relative z-10'>
                     <CardTitle className='flex items-center gap-3 text-2xl'>
                       <div className='p-2 rounded-lg bg-gradient-primary'>
-                        <Sparkles className='w-6 h-6 text-white' />
+                        <Sparkles className='w-6 h-6 text-primary-foreground' />
                       </div>
                       Magic UI 展示
                     </CardTitle>
@@ -246,7 +209,7 @@ export default function HomePage() {
                       包含流星雨、粒子系统、文字揭示等炫酷效果。
                     </p>
                     <Link href='/magic'>
-                      <Button className='w-full bg-gradient-primary hover:shadow-warm text-white border-0 h-12 text-base group'>
+                      <Button className='w-full bg-gradient-primary hover:shadow-warm text-primary-foreground border-0 h-12 text-base group'>
                         探索 Magic UI
                         <ChevronRight className='ml-2 w-4 h-4 transition-transform group-hover:translate-x-1' />
                       </Button>
@@ -267,7 +230,7 @@ export default function HomePage() {
                   <CardHeader className='relative z-10'>
                     <CardTitle className='flex items-center gap-3 text-2xl'>
                       <div className='p-2 rounded-lg bg-gradient-secondary'>
-                        <Zap className='w-6 h-6 text-white' />
+                        <Zap className='w-6 h-6 text-accent-foreground' />
                       </div>
                       tRPC 示例
                     </CardTitle>
@@ -336,7 +299,7 @@ export default function HomePage() {
                     <div
                       className={`inline-flex p-3 rounded-full bg-gradient-to-r ${feature.gradient} mb-4`}
                     >
-                      <feature.icon className='w-6 h-6 text-white' />
+                      <feature.icon className='w-6 h-6 text-accent' />
                     </div>
                     <h3 className='text-xl font-semibold mb-3'>
                       {feature.title}
@@ -361,7 +324,7 @@ export default function HomePage() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className='text-4xl font-bold mb-6'>
+              <h2 className='font-display text-4xl font-bold mb-6'>
                 <span className='text-gradient-primary'>交互式演示</span>
               </h2>
               <p className='text-xl text-muted-foreground'>
@@ -390,7 +353,7 @@ export default function HomePage() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h2 className='text-4xl font-bold mb-6'>
+              <h2 className='font-display text-4xl font-bold mb-6'>
                 <span className='text-gradient-accent'>快速开始</span>
               </h2>
               <p className='text-xl text-muted-foreground'>
@@ -435,7 +398,7 @@ export default function HomePage() {
                         <Badge className='bg-gradient-primary text-primary-foreground px-3 py-1 text-lg font-bold'>
                           {item.step}
                         </Badge>
-                        <code className='flex-1 bg-background/50 px-4 py-2 rounded font-mono text-accent'>
+                        <code className='flex-1 bg-background/50 px-4 py-2 rounded font-mono text-accent tracking-tight'>
                           {item.command}
                         </code>
                         <span className='text-muted-foreground text-sm'>
@@ -454,7 +417,7 @@ export default function HomePage() {
                   >
                     <p className='text-muted-foreground mb-4'>
                       然后访问{' '}
-                      <code className='bg-card/20 px-2 py-1 rounded text-accent'>
+                      <code className='font-mono bg-card/20 px-2 py-1 rounded text-accent'>
                         http://localhost:3000
                       </code>
                     </p>
@@ -490,7 +453,7 @@ export default function HomePage() {
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <h3 className='text-2xl font-bold mb-4'>
+              <h3 className='font-display text-2xl font-bold mb-4'>
                 <span className='text-gradient-accent'>Fast MVP</span>
               </h3>
               <p className='text-muted-foreground mb-6'>

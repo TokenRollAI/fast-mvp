@@ -1,55 +1,121 @@
 @import 'tailwindcss';
 
+/* ========================================
+   字体系统 - Font System
+   ======================================== */
+
+/* 引入霞鹜文楷 - 优雅的开源中文字体 */
+@import url('https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.1.0/style.css');
+
+/*
+  商业字体说明 - Commercial Fonts Notice:
+  Trajan Pro 和 Futura 是商业字体，需要购买授权后使用。
+  下方提供了 @font-face 模板，请在获得授权后取消注释并配置正确的字体文件路径。
+
+  如果暂无授权，系统会自动回退到 Georgia 和 system-ui。
+*/
+
+/*
+@font-face {
+  font-family: 'Trajan Pro';
+  src: url('/fonts/TrajanPro-Regular.woff2') format('woff2'),
+       url('/fonts/TrajanPro-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Trajan Pro';
+  src: url('/fonts/TrajanPro-Bold.woff2') format('woff2'),
+       url('/fonts/TrajanPro-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Futura';
+  src: url('/fonts/Futura-Medium.woff2') format('woff2'),
+       url('/fonts/Futura-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Futura';
+  src: url('/fonts/Futura-Bold.woff2') format('woff2'),
+       url('/fonts/Futura-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
 :root {
-  /* 基于深色调渐变的统一主题配色 */
-  --background: #001014;
-  --foreground: #f0f0f0;
-  --card: #2c0f1e;
-  --card-foreground: #f0f0f0;
-  --popover: #2c0f1e;
-  --popover-foreground: #f0f0f0;
-  --primary: #ba7123;
-  --primary-foreground: #001014;
-  --secondary: #554560;
-  --secondary-foreground: #a89e4b;
-  --muted: #230000;
-  --muted-foreground: #c56b77;
-  --accent: #f0f0f0;
-  --accent-foreground: #001014;
-  --destructive: #c56b77;
-  --destructive-foreground: #f0f0f0;
-  --border: #63384f;
-  --input: #63384f;
-  --ring: #ba7123;
+  /* 基于深色调渐变的统一主题配色 - HSL 格式 */
+  /* 格式说明：Tailwind 期望不带 hsl() 包装的三个值 */
+  --background: 210 100% 4%;
+  --foreground: 0 0% 94%;
+  --card: 330 48% 12%;
+  --card-foreground: 0 0% 94%;
+  --popover: 330 48% 12%;
+  --popover-foreground: 0 0% 94%;
+  --primary: 30 67% 43%;
+  --primary-foreground: 210 100% 4%;
+  --secondary: 280 17% 30%;
+  --secondary-foreground: 52 39% 48%;
+  --muted: 0 100% 7%;
+  --muted-foreground: 352 47% 60%;
+  --accent: 0 0% 94%;
+  --accent-foreground: 210 100% 4%;
+  --destructive: 352 47% 60%;
+  --destructive-foreground: 0 0% 94%;
+  --border: 330 26% 30%;
+  --input: 330 26% 30%;
+  --ring: 30 67% 43%;
   --radius: 0.5rem;
 
-  /* 自定义渐变色变量 */
-  --gradient-primary: linear-gradient(135deg, #ba7123 0%, #523737 100%);
-  --gradient-secondary: linear-gradient(135deg, #554560 0%, #a89e4b 100%);
-  --gradient-accent: linear-gradient(135deg, #c56b77 0%, #a64b4b 100%);
+  /* 自定义渐变色变量 - 使用 HSL 格式 */
+  --gradient-primary: linear-gradient(
+    135deg,
+    hsl(30 67% 43%) 0%,
+    hsl(0 19% 27%) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    hsl(280 17% 30%) 0%,
+    hsl(52 39% 48%) 100%
+  );
+  --gradient-accent: linear-gradient(
+    135deg,
+    hsl(352 47% 60%) 0%,
+    hsl(0 39% 48%) 100%
+  );
   --gradient-warm: linear-gradient(
     135deg,
-    #ba7123 0%,
-    #a89e4b 50%,
-    #f0f0f0 100%
+    hsl(30 67% 43%) 0%,
+    hsl(52 39% 48%) 50%,
+    hsl(0 0% 94%) 100%
   );
   --gradient-dark: linear-gradient(
     135deg,
-    #001014 0%,
-    #2c0f1e 50%,
-    #230000 100%
+    hsl(210 100% 4%) 0%,
+    hsl(330 48% 12%) 50%,
+    hsl(0 100% 7%) 100%
   );
   --gradient-cool: linear-gradient(
     135deg,
-    #554560 0%,
-    #63384f 50%,
-    #c56b77 100%
+    hsl(280 17% 30%) 0%,
+    hsl(330 26% 30%) 50%,
+    hsl(352 47% 60%) 100%
   );
   --gradient-earth: linear-gradient(
     135deg,
-    #54573d 0%,
-    #ba7123 50%,
-    #a89e4b 100%
+    hsl(62 16% 29%) 0%,
+    hsl(30 67% 43%) 50%,
+    hsl(52 39% 48%) 100%
   );
 }
 
@@ -62,6 +128,11 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
+  /* 字体渲染优化 - Font Rendering Optimization */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern' 1, 'liga' 1;
 }
 
 /* 自定义渐变工具类 */
@@ -136,38 +207,95 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
-/* 深色调的阴影效果 */
+/* 深色调的阴影效果 - 使用 HSL 格式 */
 .shadow-warm {
   box-shadow:
-    0 4px 6px -1px rgba(186, 113, 35, 0.2),
-    0 2px 4px -1px rgba(186, 113, 35, 0.1);
+    0 4px 6px -1px hsl(30 67% 43% / 0.2),
+    0 2px 4px -1px hsl(30 67% 43% / 0.1);
 }
 
 .shadow-warm-lg {
   box-shadow:
-    0 10px 15px -3px rgba(186, 113, 35, 0.2),
-    0 4px 6px -2px rgba(186, 113, 35, 0.1);
+    0 10px 15px -3px hsl(30 67% 43% / 0.2),
+    0 4px 6px -2px hsl(30 67% 43% / 0.1);
 }
 
 .shadow-warm-xl {
   box-shadow:
-    0 20px 25px -5px rgba(186, 113, 35, 0.2),
-    0 10px 10px -5px rgba(186, 113, 35, 0.08);
+    0 20px 25px -5px hsl(30 67% 43% / 0.2),
+    0 10px 10px -5px hsl(30 67% 43% / 0.08);
 }
 
-/* 发光效果 */
+/* 发光效果 - 使用 HSL 格式 */
 .glow-warm {
-  box-shadow: 0 0 20px rgba(222, 193, 109, 0.4);
+  box-shadow: 0 0 20px hsl(52 68% 65% / 0.4);
 }
 
 .glow-primary {
-  box-shadow: 0 0 20px rgba(186, 113, 35, 0.5);
+  box-shadow: 0 0 20px hsl(30 67% 43% / 0.5);
 }
 
 .glow-accent {
-  box-shadow: 0 0 20px rgba(197, 107, 119, 0.4);
+  box-shadow: 0 0 20px hsl(352 47% 60% / 0.4);
 }
 
 .glow-cool {
-  box-shadow: 0 0 20px rgba(85, 69, 96, 0.4);
+  box-shadow: 0 0 20px hsl(280 17% 30% / 0.4);
+}
+
+/* 玻璃态效果 */
+.glass {
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.2);
+}
+
+.glass-strong {
+  background: hsl(var(--card) / 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid hsl(var(--border) / 0.3);
+}
+
+/* 平滑过渡工具类 */
+.transition-smooth {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-bounce {
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* 响应式间距工具类 */
+.section-padding {
+  padding: 2rem 1rem;
+}
+
+@media (min-width: 768px) {
+  .section-padding {
+    padding: 4rem 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-padding {
+    padding: 6rem 3rem;
+  }
+}
+
+/* 背景模糊工具类 */
+.backdrop-blur-xs {
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.backdrop-blur-light {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.backdrop-blur-heavy {
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
 }
