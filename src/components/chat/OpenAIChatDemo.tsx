@@ -1,18 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { trpc } from '@/lib/trpc/client'
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils/utils'
 
 const OPENAI_MODEL = 'gpt-4o-mini'
 
@@ -22,19 +11,14 @@ type Message = {
   content: string
 }
 
-/**
- * 为聊天气泡生成一个可读的角色标签。
- *
- * @param role 聊天消息的角色。
- */
 const getRoleLabel = (role: string) => {
   switch (role) {
     case 'user':
-      return '你'
+      return 'You'
     case 'assistant':
-      return 'OpenAI'
+      return 'AI'
     case 'system':
-      return '系统'
+      return 'System'
     default:
       return role
   }
@@ -43,10 +27,10 @@ const getRoleLabel = (role: string) => {
 export const OpenAIChatDemo = () => {
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<Message[]>([])
+  const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const sendMessageMutation = trpc.chat.sendMessage.useMutation({
     onSuccess: (data) => {
-      // 添加助手回复到消息列表
       const assistantMessage: Message = {
         id: Date.now().toString() + '-assistant',
         role: 'assistant',
@@ -55,7 +39,7 @@ export const OpenAIChatDemo = () => {
       setMessages((prev) => [...prev, assistantMessage])
     },
     onError: (error) => {
-      console.error('发送消息失败:', error)
+      console.error('Failed to send message:', error)
     },
   })
 
@@ -65,17 +49,14 @@ export const OpenAIChatDemo = () => {
 
     const messageText = input.trim()
 
-    // 添加用户消息到列表
     const userMessage: Message = {
       id: Date.now().toString() + '-user',
       role: 'user',
       content: messageText,
     }
 
-    // 先更新消息列表
     setMessages((prev) => [...prev, userMessage])
 
-    // 发送消息到后端，使用当前的消息历史
     sendMessageMutation.mutate({
       message: messageText,
       provider: 'openai',
@@ -86,78 +67,165 @@ export const OpenAIChatDemo = () => {
       })),
     })
 
-    // 清空输入框
     setInput('')
   }
 
+  const handleClear = () => {
+    setMessages([])
+  }
+
+  // Auto scroll to bottom
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [messages])
+
+  const totalMessages = messages.length
+  const userMessages = messages.filter((m) => m.role === 'user').length
+  const aiMessages = messages.filter((m) => m.role === 'assistant').length
+
   return (
-    <Card className='w-full max-w-xl border border-border/60 bg-card/80 backdrop-blur'>
-      <CardHeader>
-        <CardTitle>OpenAI 聊天演示</CardTitle>
-        <CardDescription>
-          使用 Vercel AI SDK 调用 OpenAI 模型 {OPENAI_MODEL} 的最小示例。
-        </CardDescription>
-      </CardHeader>
-      <CardContent className='space-y-4'>
-        <div className='rounded-lg border border-border/60 bg-background/60 p-4 h-72 overflow-y-auto space-y-3 text-sm'>
+    <div className='space-y-6'>
+      {/* Statistics */}
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+        <div className='brutalist-stat-card'>
+          <div className='brutalist-stat-value'>{totalMessages}</div>
+          <div className='brutalist-stat-label'>Total Messages</div>
+        </div>
+        <div className='brutalist-stat-card'>
+          <div className='brutalist-stat-value'>{userMessages}</div>
+          <div className='brutalist-stat-label'>Your Messages</div>
+        </div>
+        <div className='brutalist-stat-card'>
+          <div className='brutalist-stat-value'>{aiMessages}</div>
+          <div className='brutalist-stat-label'>AI Responses</div>
+        </div>
+      </div>
+
+      {/* Chat Interface */}
+      <div className='brutalist-card p-8'>
+        <div className='flex items-center justify-between mb-6'>
+          <div>
+            <h2 className='brutalist-heading'>Chat with OpenAI</h2>
+            <p className='brutalist-text brutalist-text-secondary'>
+              Model: {OPENAI_MODEL}
+            </p>
+          </div>
+          {messages.length > 0 && (
+            <button
+              onClick={handleClear}
+              className='brutalist-button brutalist-button-pink'
+            >
+              Clear Chat
+            </button>
+          )}
+        </div>
+
+        {/* Messages Area */}
+        <div className='brutalist-card-sm p-6 h-96 overflow-y-auto mb-6 bg-white'>
           {messages.length > 0 ? (
-            messages.map((message) => (
-              <div key={message.id} className='space-y-1'>
-                <p className='text-muted-foreground font-medium'>
-                  {getRoleLabel(message.role)}
-                </p>
-                <div
-                  className={cn(
-                    'rounded-md px-3 py-2 whitespace-pre-wrap leading-relaxed',
-                    message.role === 'user'
-                      ? 'bg-primary/10 text-primary-foreground/80 dark:text-primary-foreground'
-                      : 'bg-secondary text-secondary-foreground',
-                  )}
-                >
-                  {message.content}
+            <div className='space-y-4'>
+              {messages.map((message) => (
+                <div key={message.id} className='space-y-2'>
+                  <div className='flex items-center gap-2'>
+                    <span
+                      className={`brutalist-badge ${
+                        message.role === 'user'
+                          ? 'brutalist-badge-blue'
+                          : 'brutalist-badge-green'
+                      }`}
+                    >
+                      {getRoleLabel(message.role)}
+                    </span>
+                  </div>
+                  <div
+                    className={`p-4 rounded-lg ${
+                      message.role === 'user'
+                        ? 'bg-blue-50 border-2 border-black'
+                        : 'bg-green-50 border-2 border-black'
+                    }`}
+                  >
+                    <p className='brutalist-text whitespace-pre-wrap'>
+                      {message.content}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
           ) : (
-            <div className='flex h-full items-center justify-center text-sm text-muted-foreground'>
-              输入问题后点击发送即可收到回复
+            <div className='flex h-full items-center justify-center text-center'>
+              <div>
+                <p className='brutalist-text brutalist-text-secondary mb-2'>
+                  No messages yet
+                </p>
+                <p className='brutalist-text brutalist-text-secondary text-sm'>
+                  Type a question below to start chatting
+                </p>
+              </div>
             </div>
           )}
         </div>
 
-        {sendMessageMutation.error ? (
-          <div className='rounded-md border border-destructive/20 bg-destructive/10 px-3 py-2 text-sm text-destructive'>
-            请求失败：{sendMessageMutation.error.message}
+        {/* Error Display */}
+        {sendMessageMutation.error && (
+          <div className='brutalist-card-sm p-4 bg-red-50 mb-4'>
+            <div className='flex items-center gap-2'>
+              <span className='brutalist-badge brutalist-badge-pink'>
+                Error
+              </span>
+              <span className='brutalist-text font-semibold'>
+                {sendMessageMutation.error.message}
+              </span>
+            </div>
           </div>
-        ) : null}
+        )}
 
-        <form
-          className='flex flex-col gap-3 sm:flex-row'
-          onSubmit={handleSubmit}
-        >
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder='例如：给我一个产品发布会的创意标题'
-            className='flex-1'
-            disabled={sendMessageMutation.isPending}
-            autoFocus
-          />
-          <div className='flex gap-2'>
-            <Button
+        {/* Input Form */}
+        <form onSubmit={handleSubmit} className='space-y-4'>
+          <div>
+            <label className='brutalist-text block mb-2 font-semibold'>
+              Your Message
+            </label>
+            <input
+              type='text'
+              className='brutalist-input'
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder='e.g., Give me a creative title for a product launch...'
+              disabled={sendMessageMutation.isPending}
+              autoFocus
+            />
+          </div>
+
+          <div className='flex gap-3'>
+            <button
               type='submit'
               disabled={
                 sendMessageMutation.isPending || input.trim().length === 0
               }
+              className='brutalist-button flex-1'
             >
-              {sendMessageMutation.isPending ? '生成中…' : '发送'}
-            </Button>
+              {sendMessageMutation.isPending ? 'Sending...' : '💬 Send Message'}
+            </button>
           </div>
         </form>
-      </CardContent>
-      <CardFooter className='text-xs text-muted-foreground flex flex-col gap-1 items-start'>
-        <p>提示：你可以在 .env.local 中配置 OPENAI_MODEL 来覆盖默认模型。</p>
-      </CardFooter>
-    </Card>
+      </div>
+
+      {/* Help Card */}
+      <div className='brutalist-card-sm p-6'>
+        <h3 className='brutalist-text font-semibold mb-3'>Tips</h3>
+        <ul className='space-y-2'>
+          <li className='brutalist-text brutalist-text-secondary text-sm'>
+            • Conversation history is maintained during your session
+          </li>
+          <li className='brutalist-text brutalist-text-secondary text-sm'>
+            • Clear chat to start a fresh conversation
+          </li>
+          <li className='brutalist-text brutalist-text-secondary text-sm'>
+            • Configure OPENAI_MODEL in .env.local to change the model
+          </li>
+        </ul>
+      </div>
+    </div>
   )
 }

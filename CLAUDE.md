@@ -13,7 +13,7 @@ When the user asks to build a new feature, follow this pattern:
 1. **Identify the feature type:**
    - AI Chat/Completion → Reference `src/app/(pages)/openai/page.tsx` and `src/server/routers/chat.ts`
    - CRUD with tRPC → Reference `src/server/routers/hello.ts` and `src/app/(pages)/trpc/page.tsx`
-   - Animated UI → Reference `src/app/(pages)/magic/page.tsx` and `src/components/magicui/`
+   - Brutalist UI → Reference `src/app/(pages)/page.tsx` and `src/app/(pages)/globals.css`
 
 2. **Copy and adapt existing patterns:**
    - Don't reinvent the wheel - this template has working examples
@@ -115,89 +115,102 @@ Multi-provider AI integration using Vercel AI SDK:
 
 ```
 src/components/
-├── ui/           # shadcn/ui base components
-├── magicui/      # MagicUI animated components
-├── features/     # Business logic components
+├── ui/           # UI components (morphing-text animation)
+├── chat/         # Chat feature components
+├── helloDemo/    # Demo components
 └── providers/    # React context providers (tRPC, Theme)
 ```
 
-**Component strategy:** Prioritize using existing shadcn/ui or magicui components (`pnpm dlx shadcn@latest add [component]`) before building custom UI.
+**Component strategy:** Use Radix UI Themes components with Brutalist CSS classes. Follow the Neo-Brutalism design system for all new UI.
 
-## 🎨 Theme System - Use This, Not Hardcoded Colors!
+## 🎨 Neo-Brutalism Design System - Use This!
 
-The project has a **comprehensive theme system** defined in `src/app/(pages)/globals.css`. **ALWAYS use theme classes instead of hardcoded colors.**
+The project uses a **Neo-Brutalism design system** defined in `src/app/(pages)/globals.css`. **ALWAYS use Brutalist CSS classes instead of custom styles.**
 
 ### ❌ DON'T Do This:
 
 ```tsx
-// BAD - Hardcoded colors
+// BAD - Hardcoded colors and styles
 <div className="bg-[#ba7123] text-[#f0f0f0]">
-<div className="bg-blue-500 text-white">
-<div style={{ background: 'linear-gradient(135deg, #ba7123, #523737)' }}>
+<div className="bg-blue-500 text-white rounded-lg shadow-lg px-4 py-2">
+<button style={{ background: 'linear-gradient(135deg, #ba7123, #523737)' }}>
 ```
 
 ### ✅ DO This Instead:
 
-**Semantic Colors (Recommended):**
+**Brutalist Components (Recommended):**
 
 ```tsx
-// Use semantic theme colors
-<div className="bg-primary text-primary-foreground">      // Main brand color
-<div className="bg-secondary text-secondary-foreground">  // Secondary color
-<div className="bg-accent text-accent-foreground">        // Accent color
-<div className="bg-muted text-muted-foreground">          // Muted/subdued
-<div className="bg-card text-card-foreground">            // Card backgrounds
-<div className="bg-destructive text-destructive-foreground"> // Error states
+// Use Brutalist CSS classes
+<div className="brutalist-container">           // Page container
+<div className="brutalist-card p-8">           // Large card with padding
+<div className="brutalist-card-sm p-6">        // Small card
+<button className="brutalist-button">          // Default button
+<button className="brutalist-button brutalist-button-blue">  // Colored button
+<input className="brutalist-input" />          // Input field
+<span className="brutalist-badge brutalist-badge-green">  // Badge
+<table className="brutalist-table">            // Table
+<div className="brutalist-stat-card">          // Stat card
 ```
 
-**Gradients (Pre-defined):**
+**Typography:**
 
 ```tsx
-// Use built-in gradient classes
-<div className="bg-gradient-primary">     // Main brand gradient
-<div className="bg-gradient-secondary">   // Secondary gradient
-<div className="bg-gradient-accent">      // Accent gradient
-<div className="bg-gradient-warm">        // Warm gradient
-<div className="bg-gradient-cool">        // Cool gradient
-<div className="bg-gradient-earth">       // Earth tones
-<div className="bg-gradient-dark">        // Dark gradient
-
-// Text gradients
-<h1 className="text-gradient-primary">Gradient Text</h1>
-<h1 className="text-gradient-warm">Warm Text</h1>
+<h1 className="brutalist-title">Main Title</h1>
+<h2 className="brutalist-heading">Heading</h2>
+<p className="brutalist-text">Body text</p>
+<p className="brutalist-text brutalist-text-secondary">Secondary text</p>
 ```
 
-**Effects (Shadows & Glows):**
+**Color Variants:**
 
 ```tsx
-<div className="shadow-warm">           // Warm shadow
-<div className="shadow-warm-lg">        // Larger warm shadow
-<div className="glow-primary">          // Primary glow effect
-<div className="glow-warm">             // Warm glow
+// Buttons
+brutalist - button - pink
+brutalist - button - blue
+brutalist - button - green
+
+// Badges
+brutalist - badge - blue
+brutalist - badge - green
+brutalist - badge - yellow
+brutalist - badge - queued
 ```
 
-### Available Theme Tokens
+### Design Tokens
 
 **Colors:**
 
-- `background` / `foreground` - Page background and text
-- `primary` / `primary-foreground` - Main brand color (#ba7123)
-- `secondary` / `secondary-foreground` - Secondary color (#554560)
-- `accent` / `accent-foreground` - Accent highlights
-- `muted` / `muted-foreground` - Subdued elements
-- `card` / `card-foreground` - Card backgrounds
-- `border` / `input` / `ring` - Form elements
+- `--color-pink`: #ff7aa3
+- `--color-yellow`: #ffd966
+- `--color-blue`: #6ba4ff
+- `--color-green`: #5fe0a8
+- `--text-primary`: #000000
+- `--text-secondary`: #666666
 
-**Gradients:** `primary`, `secondary`, `accent`, `warm`, `cool`, `earth`, `dark`
+**Borders:**
 
-**Effects:** `shadow-warm`, `glow-primary`, `glow-warm`, `glow-accent`, `glow-cool`
+- `--border-thick`: 3px
+- `--border-medium`: 2px
+- `--border-thin`: 1px
+
+**Shadows:**
+
+- `--shadow-lg`: 6px 6px 0 rgba(0, 0, 0, 0.15)
+- `--shadow-md`: 4px 4px 0 rgba(0, 0, 0, 0.15)
+
+**Radius:**
+
+- `--radius-xl`: 20px
+- `--radius-lg`: 16px
+- `--radius-md`: 12px
 
 ### Why This Matters
 
-1. **Consistency** - Entire app uses same color palette
-2. **Maintainability** - Change theme in one place (globals.css)
-3. **Accessibility** - Guaranteed contrast ratios
-4. **Speed** - No thinking about colors, just pick semantic name
+1. **Design Consistency** - All pages use the same Brutalist style
+2. **Fast Development** - Pre-built components, no custom CSS needed
+3. **Visual Identity** - Bold, functional, geometric design
+4. **Maintainability** - Update design tokens in one place
 
 ## Development Workflow
 
@@ -210,7 +223,6 @@ The project has a **comprehensive theme system** defined in `src/app/(pages)/glo
 ```bash
 # Once you understand the structure, remove example pages
 rm -rf src/app/(pages)/trpc
-rm -rf src/app/(pages)/magic
 rm -rf src/app/(pages)/openai
 # Keep the structure, remove the demos
 ```
@@ -263,20 +275,23 @@ rm -rf src/app/(pages)/openai
    ```
 
 5. **Build the UI** (15 min)
-   - Use existing components from `src/components/ui/`
+   - Use Brutalist CSS classes from `src/app/(pages)/globals.css`
    - Follow the pattern in `OpenAIChatDemo.tsx`
    - Add loading states and error handling
 
 6. **Design Beautiful Homepage** (10 min) 🎨 REQUIRED
    ```tsx
    // Edit src/app/(pages)/page.tsx
-   // Use theme classes, NOT hardcoded colors!
-   <section className="bg-gradient-warm py-20">  // NOT bg-[#ba7123]
-     <h1 className="text-gradient-primary">Demo Name</h1>
-   </section>
-   <Card className="shadow-warm">  // NOT shadow-xl
-     <CardTitle className="text-primary">Feature</CardTitle>
-   </Card>
+   // Use Brutalist classes, NOT hardcoded colors!
+   <div className='brutalist-container'>
+     <h1 className='brutalist-title'>Demo Name</h1>
+     <div className='brutalist-card p-8'>
+       <h2 className='brutalist-heading'>Feature</h2>
+       <button className='brutalist-button brutalist-button-blue'>
+         Try Now
+       </button>
+     </div>
+   </div>
    ```
 
 **Total time: ~50 minutes from idea to production-ready demo**
@@ -343,9 +358,9 @@ const mutation = trpc.feature.action.useMutation({
 4. **Component reuse priority:**
 
    ```
-   1. shadcn/ui components (run: pnpm dlx shadcn@latest add [name])
-   2. MagicUI components (src/components/magicui/)
-   3. Custom components only if necessary
+   1. Brutalist CSS classes (src/app/(pages)/globals.css)
+   2. Radix UI Themes components (with Brutalist styling)
+   3. Custom components only if absolutely necessary
    ```
 
 5. **Don't over-engineer**
@@ -369,3 +384,7 @@ Copy `.env.example` to `.env.local`:
 - `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_BASE_URL`
 - `GOOGLE_API_KEY`, `GOOGLE_MODEL`, `GOOGLE_API_BASE_URL`
 - `ANTHROPIC_API_KEY`, `ANTHROPIC_MODEL`, `ANTHROPIC_BASE_URL`
+
+---
+
+- Always follow <projectRoot>/llmdoc/feature/neo-brutalism-design-system.md to design new page and component

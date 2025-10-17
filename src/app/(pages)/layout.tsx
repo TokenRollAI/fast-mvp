@@ -1,6 +1,15 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import '@radix-ui/themes/styles.css'
+import { Theme } from '@radix-ui/themes'
 import { TRPCProvider } from '@/components/providers/TrpcProvider'
+import { IBM_Plex_Sans } from 'next/font/google'
+
+const ibmPlexSans = IBM_Plex_Sans({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-ibm-plex',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -26,9 +35,16 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en'>
+    <html lang='en' className={ibmPlexSans.variable}>
       <body className='font-sans antialiased'>
-        <TRPCProvider>{children}</TRPCProvider>
+        <Theme
+          accentColor='orange'
+          grayColor='sand'
+          radius='large'
+          appearance='light'
+        >
+          <TRPCProvider>{children}</TRPCProvider>
+        </Theme>
       </body>
     </html>
   )

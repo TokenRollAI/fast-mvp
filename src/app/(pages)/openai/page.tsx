@@ -1,49 +1,44 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { OpenAIChatDemo } from '@/components/chat/OpenAIChatDemo'
 
 export const metadata: Metadata = {
-  title: 'OpenAI 演示 | Fast MVP',
+  title: 'OpenAI Demo | Fast MVP',
   description:
-    '使用 Vercel AI SDK 调用 OpenAI 模型的入门示例，展示如何在 Fast MVP 模板中快速集成 AI 能力。',
+    'OpenAI integration demo using Vercel AI SDK. Shows how to quickly add AI capabilities to your Fast MVP project.',
 }
 
 export default function OpenAIPage() {
   return (
-    <div className='mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-12 px-6 py-16'>
-      <section className='space-y-6 text-center'>
-        <div className='inline-flex rounded-full bg-primary/10 px-4 py-1 text-sm font-medium text-primary'>
-          OpenAI 集成演示
-        </div>
-        <h1 className='text-4xl font-bold tracking-tight sm:text-5xl'>
-          在 Fast MVP 中体验 OpenAI 聊天能力
-        </h1>
-        <p className='mx-auto max-w-2xl text-lg text-muted-foreground'>
-          下方的演示组件通过 Vercel AI SDK 调用你在环境变量中配置的 OpenAI
-          模型，展示了如何在几行代码内构建 AI 交互体验。
+    <div className='brutalist-container'>
+      <div className='mb-8'>
+        <Link href='/'>
+          <button className='brutalist-button brutalist-button-blue mb-4'>
+            ← Back to Home
+          </button>
+        </Link>
+        <h1 className='brutalist-title'>AI Chat Demo</h1>
+        <p className='brutalist-text brutalist-text-secondary max-w-3xl mb-6'>
+          Experience OpenAI chat capabilities in Fast MVP. This demo uses Vercel
+          AI SDK to call the OpenAI model configured in your environment
+          variables.
         </p>
-      </section>
 
-      <div className='flex justify-center'>
-        <OpenAIChatDemo />
+        {/* Info Card */}
+        <div className='brutalist-card-sm p-6 bg-blue-50'>
+          <h3 className='brutalist-text font-semibold mb-2'>Quick Start</h3>
+          <p className='brutalist-text brutalist-text-secondary text-sm'>
+            Set{' '}
+            <code className='bg-white px-2 py-1 rounded'>OPENAI_API_KEY</code>{' '}
+            (and optionally{' '}
+            <code className='bg-white px-2 py-1 rounded'>OPENAI_MODEL</code>) in{' '}
+            <code className='bg-white px-2 py-1 rounded'>.env.local</code>, then
+            restart the dev server.
+          </p>
+        </div>
       </div>
 
-      <Card className='border-dashed'>
-        <CardContent className='flex flex-col gap-4 p-6 text-left text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between'>
-          <div>
-            <p className='font-medium text-foreground'>快速上手</p>
-            <p>
-              在 <code>.env.local</code> 中设置 <code>OPENAI_API_KEY</code>{' '}
-              （及可选的 <code>OPENAI_MODEL</code>），然后重启开发服务器。
-            </p>
-          </div>
-          <Button asChild variant='outline'>
-            <Link href='/'>返回首页</Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <OpenAIChatDemo />
     </div>
   )
 }

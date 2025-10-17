@@ -9,6 +9,7 @@
 ### 步骤 1: 配置 AI 提供商 (5 分钟)
 
 **使用现有提供商 (OpenAI/Claude/Gemini):**
+
 ```bash
 # .env.local
 # 选择一个或多个提供商配置
@@ -16,26 +17,32 @@
 # OpenAI
 OPENAI_API_KEY="sk-your-openai-api-key"
 OPENAI_MODEL="gpt-4o-mini"
-OPENAI_BASE_URL="https://api.openai.com/v1"  # 可选
+OPENAI_BASE_URL="https://api.openai.com/v1"  # 可选，可留空使用默认值
 
 # Claude
 ANTHROPIC_API_KEY="sk-ant-your-claude-api-key"
 ANTHROPIC_MODEL="claude-3-5-sonnet-latest"
-ANTHROPIC_BASE_URL="https://api.anthropic.com"  # 可选
+ANTHROPIC_BASE_URL="https://api.anthropic.com"  # 可选，可留空使用默认值
 
 # Gemini
 GOOGLE_API_KEY="your-google-api-key"
 GOOGLE_MODEL="gemini-2.0-flash-001"
-GOOGLE_API_BASE_URL=""  # 可选
+GOOGLE_API_BASE_URL=""  # 可留空，系统会自动处理
 ```
 
 **环境变量已预配置在 `.env.example` 中，复制并填入实际值即可。**
+
+**环境变量验证说明:**
+- URL 类型环境变量（`*_BASE_URL`）支持空字符串，系统会自动使用对应的默认值
+- 如果不使用某个提供商，可以将其所有环境变量留空
+- 系统在启动时会自动验证环境变量格式，空字符串不会导致 Zod 验证失败
 
 ### 步骤 2: 添加新的 AI 提供商 (15 分钟)
 
 **仅在需要支持新提供商时执行此步骤**
 
 1. **创建提供商实现文件**
+
    ```typescript
    // src/lib/ai/providers/new-provider.ts
    import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
@@ -55,7 +62,8 @@ GOOGLE_API_BASE_URL=""  # 可选
        client = createOpenAICompatible({
          apiKey: env.NEW_PROVIDER_API_KEY,
          name: 'new-provider',
-         baseURL: env.NEW_PROVIDER_BASE_URL || 'https://api.new-provider.com/v1',
+         baseURL:
+           env.NEW_PROVIDER_BASE_URL || 'https://api.new-provider.com/v1',
        })
      }
      return client
@@ -68,6 +76,7 @@ GOOGLE_API_BASE_URL=""  # 可选
    ```
 
 2. **更新工厂函数**
+
    ```typescript
    // src/lib/ai/providers/index.ts
    import { getNewProviderModel } from './new-provider'
@@ -94,6 +103,7 @@ GOOGLE_API_BASE_URL=""  # 可选
    ```
 
 3. **更新环境变量配置**
+
    ```typescript
    // src/lib/env.ts
    const envSchema = z.object({
@@ -110,12 +120,18 @@ GOOGLE_API_BASE_URL=""  # 可选
    export const chatInputSchema = {
      sendMessage: z.object({
        message: z.string().min(1, '消息不能为空'),
-       provider: z.enum(['openai', 'claude', 'gemini', 'newProvider']).default('openai'),
+       provider: z
+         .enum(['openai', 'claude', 'gemini', 'newProvider'])
+         .default('openai'),
        model: z.string().optional(),
-       conversationHistory: z.array(z.object({
-         role: z.enum(['user', 'assistant', 'system']),
-         content: z.string(),
-       })).default([]),
+       conversationHistory: z
+         .array(
+           z.object({
+             role: z.enum(['user', 'assistant', 'system']),
+             content: z.string(),
+           }),
+         )
+         .default([]),
      }),
    }
    ```
@@ -123,6 +139,7 @@ GOOGLE_API_BASE_URL=""  # 可选
 ### 步骤 3: 实现 AI 聊天功能 (10 分钟)
 
 **创建新的 tRPC 路由** (`src/server/routers/ai-feature.ts`):
+
 ```typescript
 import { router, publicProcedure } from '../trpc'
 import { generateText } from 'ai'
@@ -133,14 +150,19 @@ import type { AiProvider } from '@/lib/ai/providers'
 export const aiFeatureRouter = router({
   // 简单文本生成
   generate: publicProcedure
-    .input(z.object({
-      prompt: z.string().min(1, '提示不能为空'),
-      provider: z.enum(['openai', 'claude', 'gemini']).default('openai'),
-      model: z.string().optional(),
-      temperature: z.number().min(0).max(2).default(0.7),
-    }))
+    .input(
+      z.object({
+        prompt: z.string().min(1, '提示不能为空'),
+        provider: z.enum(['openai', 'claude', 'gemini']).default('openai'),
+        model: z.string().optional(),
+        temperature: z.number().min(0).max(2).default(0.7),
+      }),
+    )
     .mutation(async ({ input }) => {
-      const languageModel = resolveLanguageModel(input.provider as AiProvider, input.model)
+      const languageModel = resolveLanguageModel(
+        input.provider as AiProvider,
+        input.model,
+      )
       const result = await generateText({
         model: languageModel,
         prompt: input.prompt,
@@ -160,15 +182,17 @@ export const aiFeatureRouter = router({
 ```
 
 **注册路由** (`src/server/routers/_app.ts`):
+
 ```typescript
 import { aiFeatureRouter } from './ai-feature'
 export const appRouter = router({
   chat: chatRouter,
-  aiFeature: aiFeatureRouter,  // 添加新路由
+  aiFeature: aiFeatureRouter, // 添加新路由
 })
 ```
 
 **关键要求**:
+
 - 使用 `resolveLanguageModel(provider, model)` 获取模型
 - 复制 `src/server/routers/chat.ts` 中的完整错误处理逻辑
 - 错误处理包含详细日志和分类错误响应
@@ -176,6 +200,7 @@ export const appRouter = router({
 ### 步骤 4: 实现前端聊天组件 (15 分钟)
 
 **使用 tRPC React Query hooks:**
+
 ```typescript
 // src/components/aiFeature/AIChatDemo.tsx
 'use client'
@@ -278,6 +303,7 @@ export function AIChatDemo() {
 **注意**: 当前项目使用 tRPC 进行 API 调用，流式响应需要通过 Route Handler 实现。
 
 **服务端 Route Handler** (`src/app/api/ai/stream/route.ts`):
+
 ```typescript
 import { streamText } from 'ai'
 import { resolveLanguageModel } from '@/lib/ai/providers'
@@ -289,7 +315,10 @@ export async function POST(request: NextRequest) {
 
   const stream = await streamText({
     model: languageModel,
-    messages: [...conversationHistory, { role: 'user' as const, content: message }],
+    messages: [
+      ...conversationHistory,
+      { role: 'user' as const, content: message },
+    ],
     temperature: 0.7,
   })
 
@@ -302,6 +331,7 @@ export async function POST(request: NextRequest) {
 ### 步骤 6: 错误处理模式
 
 **使用与 chat router 相同的详细错误处理:**
+
 - 详细错误日志记录 (provider, model, error, stack)
 - API Key/认证错误 → UNAUTHORIZED
 - 速率限制 → TOO_MANY_REQUESTS
@@ -314,24 +344,29 @@ export async function POST(request: NextRequest) {
 ## 3. Relevant Code Modules
 
 ### 3.1 AI 提供商抽象层
+
 - `src/lib/ai/providers/index.ts` - 工厂函数 resolveLanguageModel 和 AiProvider 类型定义
 - `src/lib/ai/providers/openai.ts` - OpenAI 兼容实现 (使用 createOpenAICompatible)
 - `src/lib/ai/providers/claude.ts` - Anthropic Claude 实现 (使用 createAnthropic)
 - `src/lib/ai/providers/gemini.ts` - Google Gemini 实现 (使用 createGoogleGenerativeAI)
 
 ### 3.2 服务端路由
+
 - `src/server/routers/chat.ts` - 现有 AI 聊天路由实现，包含完整的错误处理逻辑
 - `src/server/routers/_app.ts` - 主路由聚合器，需要注册新的 AI 路由
 
 ### 3.3 前端组件
+
 - 查看现有组件实现模式，使用 tRPC React Query hooks 进行 API 调用
 
 ### 3.4 配置和验证
+
 - `src/lib/env.ts` - 环境变量配置，包含 hasAnyAIProvider 和 getAvailableProviders 辅助函数
 - `src/lib/schema/chat.ts` - 输入验证 schema，包含 sendMessage 的完整定义
 - `.env.example` - 环境变量模板文件
 
 ### 3.5 实际实现示例
+
 - 参考 `src/server/routers/chat.ts` 中的 sendMessage 实现作为标准模板
 - 所有 AI 功能都应使用 resolveLanguageModel(provider, model) 统一接口
 - 错误处理应遵循现有模式，包含详细的日志记录和用户友好的错误信息
@@ -346,3 +381,4 @@ export async function POST(request: NextRequest) {
 - **提供商选择**: 根据任务类型选择合适的 AI 提供商，可使用 getAvailableProviders() 检查配置
 - **类型安全**: 确保所有 AI 相关操作都保持类型安全，使用 AiProvider 类型和 resolveLanguageModel 函数
 - **环境变量**: 新提供商需要同时在 .env.example、src/lib/env.ts 和 provider 实现文件中配置
+- **URL 环境变量验证**: 系统已修复 Zod 4.x 验证问题，URL 类型环境变量现在支持空字符串，会自动转换为 undefined 并使用默认值

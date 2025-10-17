@@ -2,25 +2,6 @@
 
 import { useState } from 'react'
 import { trpc } from '@/lib/trpc/client'
-import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Badge } from '@/components/ui/badge'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
 
 export default function HelloDemo() {
   const [name, setName] = useState('')
@@ -29,21 +10,18 @@ export default function HelloDemo() {
 
   const utils = trpc.useUtils()
 
-  // 使用tRPC mutations
+  // tRPC mutations
   const sayHelloMutation = trpc.hello.sayHello.useMutation({
     onSuccess: () => {
-      // 成功后刷新所有记录
       utils.hello.getAll.invalidate()
-      // 清空输入框
       setName('')
-      // 清空选中的名字以隐藏查询结果
       if (selectedName === name.trim()) {
         setSelectedName('')
       }
     },
   })
 
-  // 使用tRPC queries - 直接使用，无需封装
+  // tRPC queries
   const getCountQuery = trpc.hello.getCount.useQuery(
     { name: selectedName },
     {
@@ -53,78 +31,56 @@ export default function HelloDemo() {
 
   const getAllQuery = trpc.hello.getAll.useQuery()
 
-  // 过滤记录
+  // Filter records
   const filteredRecords =
     getAllQuery.data?.filter((record) =>
       record.name.toLowerCase().includes(searchQuery.toLowerCase()),
     ) || []
 
-  // 统计信息
+  // Statistics
   const totalRecords = getAllQuery.data?.length || 0
   const totalGreetings =
     getAllQuery.data?.reduce((sum, record) => sum + record.count, 0) || 0
+  const averageGreetings =
+    totalRecords > 0 ? (totalGreetings / totalRecords).toFixed(1) : '0'
 
   return (
-    <div className='max-w-6xl mx-auto p-6 space-y-6'>
-      {/* 统计概览卡片 */}
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>总用户数</CardTitle>
-            <Badge variant='secondary'>{totalRecords}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>{totalRecords}</div>
-            <p className='text-xs text-muted-foreground'>已注册用户</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>总问候次数</CardTitle>
-            <Badge variant='default'>{totalGreetings}</Badge>
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>{totalGreetings}</div>
-            <p className='text-xs text-muted-foreground'>累计问候次数</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-            <CardTitle className='text-sm font-medium'>平均问候数</CardTitle>
-            <Badge variant='outline'>
-              {totalRecords > 0
-                ? (totalGreetings / totalRecords).toFixed(1)
-                : '0'}
-            </Badge>
-          </CardHeader>
-          <CardContent>
-            <div className='text-2xl font-bold'>
-              {totalRecords > 0
-                ? (totalGreetings / totalRecords).toFixed(1)
-                : '0'}
-            </div>
-            <p className='text-xs text-muted-foreground'>每用户平均</p>
-          </CardContent>
-        </Card>
+    <div className='space-y-6'>
+      {/* Statistics Cards */}
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+        <div className='brutalist-stat-card'>
+          <div className='brutalist-stat-value'>{totalRecords}</div>
+          <div className='brutalist-stat-label'>Total Users</div>
+        </div>
+        <div className='brutalist-stat-card'>
+          <div className='brutalist-stat-value'>{totalGreetings}</div>
+          <div className='brutalist-stat-label'>Total Greetings</div>
+        </div>
+        <div className='brutalist-stat-card'>
+          <div className='brutalist-stat-value'>{averageGreetings}</div>
+          <div className='brutalist-stat-label'>Average per User</div>
+        </div>
       </div>
 
-      {/* 主操作区域 */}
-      <Card>
-        <CardHeader>
-          <CardTitle>问候系统</CardTitle>
-          <CardDescription>输入名字进行问候或查询问候次数</CardDescription>
-        </CardHeader>
-        <CardContent className='space-y-4'>
-          <div className='space-y-2'>
-            <Label htmlFor='name'>姓名</Label>
-            <Input
-              id='name'
+      {/* Main Action Area */}
+      <div className='brutalist-card p-8'>
+        <h2 className='brutalist-heading'>Greeting System</h2>
+        <p className='brutalist-text brutalist-text-secondary mb-6'>
+          Enter a name to greet or query greeting count
+        </p>
+
+        <div className='space-y-4'>
+          {/* Name Input */}
+          <div>
+            <label className='brutalist-text block mb-2 font-semibold'>
+              Name
+            </label>
+            <input
               type='text'
+              className='brutalist-input'
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder='请输入姓名...'
+              placeholder='Enter a name...'
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && name.trim()) {
                   sayHelloMutation.mutate({ name: name.trim() })
@@ -133,153 +89,164 @@ export default function HelloDemo() {
             />
           </div>
 
-          <div className='flex gap-2'>
-            <Button
+          {/* Action Buttons */}
+          <div className='flex gap-3'>
+            <button
               onClick={() =>
                 name.trim() && sayHelloMutation.mutate({ name: name.trim() })
               }
               disabled={sayHelloMutation.isPending || !name.trim()}
-              className='flex-1'
+              className='brutalist-button flex-1'
             >
-              {sayHelloMutation.isPending ? '处理中...' : '👋 说Hello'}
-            </Button>
+              {sayHelloMutation.isPending ? 'Processing...' : '👋 Say Hello'}
+            </button>
 
-            <Button
-              variant='outline'
+            <button
               onClick={() => name.trim() && setSelectedName(name.trim())}
               disabled={!name.trim()}
-              className='flex-1'
+              className='brutalist-button brutalist-button-blue flex-1'
             >
-              🔍 查询次数
-            </Button>
+              🔍 Query Count
+            </button>
           </div>
 
-          {/* 显示mutation结果 */}
+          {/* Success Message */}
           {sayHelloMutation.data && (
-            <Card className='border-primary/50 bg-primary/10'>
-              <CardContent className='pt-4'>
-                <div className='flex items-center gap-2'>
-                  <Badge variant='default'>成功</Badge>
-                  <span className='text-sm font-medium'>
-                    {sayHelloMutation.data.message}
-                  </span>
-                </div>
-                <p className='text-sm text-muted-foreground mt-1'>
-                  当前次数: {sayHelloMutation.data.count}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 显示查询结果 */}
-          {getCountQuery.data && selectedName && (
-            <Card className='border-primary/50 bg-primary/10'>
-              <CardContent className='pt-4'>
-                <div className='flex items-center gap-2'>
-                  <Badge variant='secondary'>查询结果</Badge>
-                  <span className='text-sm font-medium'>
-                    {getCountQuery.data.message}
-                  </span>
-                </div>
-                <p className='text-sm text-muted-foreground mt-1'>
-                  问候次数: {getCountQuery.data.count}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* 显示错误 */}
-          {(sayHelloMutation.error || getCountQuery.error) && (
-            <Card className='border-primary/50  border-red-200'>
-              <CardContent className='pt-4'>
-                <div className='flex items-center gap-2'>
-                  <Badge variant='destructive'>错误</Badge>
-                  <span className='text-sm font-medium'>
-                    {sayHelloMutation.error?.message ||
-                      getCountQuery.error?.message}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* 记录列表 */}
-      <Card>
-        <CardHeader>
-          <div className='flex items-center justify-between'>
-            <div>
-              <CardTitle>问候记录</CardTitle>
-              <CardDescription>所有用户的问候历史记录</CardDescription>
-            </div>
-            <Badge variant='outline'>{filteredRecords.length} 条记录</Badge>
-          </div>
-          <div className='space-y-2'>
-            <Label htmlFor='search'>搜索用户</Label>
-            <Input
-              id='search'
-              type='text'
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder='搜索用户名...'
-            />
-          </div>
-        </CardHeader>
-        <CardContent>
-          {getAllQuery.isLoading ? (
-            <div className='flex items-center justify-center py-8'>
-              <div className='text-sm text-muted-foreground'>加载中...</div>
-            </div>
-          ) : filteredRecords.length > 0 ? (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>姓名</TableHead>
-                  <TableHead>问候次数</TableHead>
-                  <TableHead>操作</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredRecords.map((record) => (
-                  <TableRow key={record.id}>
-                    <TableCell className='font-medium'>#{record.id}</TableCell>
-                    <TableCell>{record.name}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={record.count > 5 ? 'default' : 'secondary'}
-                      >
-                        {record.count} 次
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        variant='ghost'
-                        size='sm'
-                        onClick={() => setSelectedName(record.name)}
-                      >
-                        查看详情
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <div className='flex flex-col items-center justify-center py-8 text-center'>
-              <p className='text-sm text-muted-foreground mb-2'>
-                {searchQuery ? '没有找到匹配的记录' : '暂无问候记录'}
+            <div className='brutalist-card-sm p-4 bg-green-50'>
+              <div className='flex items-center gap-2 mb-2'>
+                <span className='brutalist-badge brutalist-badge-green'>
+                  Success
+                </span>
+                <span className='brutalist-text font-semibold'>
+                  {sayHelloMutation.data.message}
+                </span>
+              </div>
+              <p className='brutalist-text brutalist-text-secondary text-sm'>
+                Current count: {sayHelloMutation.data.count}
               </p>
-              {!searchQuery && (
-                <p className='text-xs text-muted-foreground'>
-                  输入姓名并点击&quot;说Hello&quot;开始使用
-                </p>
-              )}
             </div>
           )}
-        </CardContent>
-      </Card>
+
+          {/* Query Result */}
+          {getCountQuery.data && selectedName && (
+            <div className='brutalist-card-sm p-4 bg-blue-50'>
+              <div className='flex items-center gap-2 mb-2'>
+                <span className='brutalist-badge brutalist-badge-blue'>
+                  Query Result
+                </span>
+                <span className='brutalist-text font-semibold'>
+                  {getCountQuery.data.message}
+                </span>
+              </div>
+              <p className='brutalist-text brutalist-text-secondary text-sm'>
+                Greeting count: {getCountQuery.data.count}
+              </p>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {(sayHelloMutation.error || getCountQuery.error) && (
+            <div className='brutalist-card-sm p-4 bg-red-50'>
+              <div className='flex items-center gap-2'>
+                <span className='brutalist-badge brutalist-badge-pink'>
+                  Error
+                </span>
+                <span className='brutalist-text font-semibold'>
+                  {sayHelloMutation.error?.message ||
+                    getCountQuery.error?.message}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Records List */}
+      <div className='brutalist-card p-8'>
+        <div className='flex items-center justify-between mb-6'>
+          <div>
+            <h2 className='brutalist-heading'>Greeting Records</h2>
+            <p className='brutalist-text brutalist-text-secondary'>
+              All user greeting history
+            </p>
+          </div>
+          <span className='brutalist-badge brutalist-badge-queued'>
+            {filteredRecords.length} records
+          </span>
+        </div>
+
+        {/* Search Input */}
+        <div className='mb-6'>
+          <label className='brutalist-text block mb-2 font-semibold'>
+            Search Users
+          </label>
+          <input
+            type='text'
+            className='brutalist-input'
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder='Search by name...'
+          />
+        </div>
+
+        {/* Records Table */}
+        {getAllQuery.isLoading ? (
+          <div className='text-center py-8'>
+            <p className='brutalist-text brutalist-text-secondary'>
+              Loading...
+            </p>
+          </div>
+        ) : filteredRecords.length > 0 ? (
+          <table className='brutalist-table'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Greeting Count</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredRecords.map((record) => (
+                <tr key={record.id}>
+                  <td className='font-semibold'>#{record.id}</td>
+                  <td className='font-medium'>{record.name}</td>
+                  <td>
+                    <span
+                      className={`brutalist-badge ${
+                        record.count > 5
+                          ? 'brutalist-badge-yellow'
+                          : 'brutalist-badge-blue'
+                      }`}
+                    >
+                      {record.count} times
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      onClick={() => setSelectedName(record.name)}
+                      className='brutalist-button brutalist-button-green text-sm py-2 px-4'
+                    >
+                      View Details
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div className='text-center py-8'>
+            <p className='brutalist-text brutalist-text-secondary mb-2'>
+              {searchQuery ? 'No matching records found' : 'No records yet'}
+            </p>
+            {!searchQuery && (
+              <p className='brutalist-text brutalist-text-secondary text-sm'>
+                Enter a name and click &quot;Say Hello&quot; to get started
+              </p>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

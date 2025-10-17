@@ -20,12 +20,19 @@ const envSchema = z.object({
     .string()
     .url()
     .default('https://api.openai.com/v1')
-    .optional(),
+    .optional()
+    .or(z.literal(''))
+    .transform((val) => (val === '' ? undefined : val)),
   OPENAI_MODEL: z.string().default('gpt-4o-mini').optional(),
 
   // Google Gemini
   GOOGLE_API_KEY: z.string().optional(),
-  GOOGLE_API_BASE_URL: z.string().url().optional(),
+  GOOGLE_API_BASE_URL: z
+    .string()
+    .url()
+    .optional()
+    .or(z.literal(''))
+    .transform((val) => (val === '' ? undefined : val)),
   GOOGLE_MODEL: z.string().default('gemini-2.0-flash-001').optional(),
 
   // Anthropic Claude
@@ -34,7 +41,9 @@ const envSchema = z.object({
     .string()
     .url()
     .default('https://api.anthropic.com')
-    .optional(),
+    .optional()
+    .or(z.literal(''))
+    .transform((val) => (val === '' ? undefined : val)),
   ANTHROPIC_MODEL: z.string().default('claude-3-5-sonnet-latest').optional(),
 })
 

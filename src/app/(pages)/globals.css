@@ -1,173 +1,306 @@
 @import 'tailwindcss';
+@import '@radix-ui/themes/styles.css';
 
-:root {
-  /* 基于深色调渐变的统一主题配色 */
-  --background: #001014;
-  --foreground: #f0f0f0;
-  --card: #2c0f1e;
-  --card-foreground: #f0f0f0;
-  --popover: #2c0f1e;
-  --popover-foreground: #f0f0f0;
-  --primary: #ba7123;
-  --primary-foreground: #001014;
-  --secondary: #554560;
-  --secondary-foreground: #a89e4b;
-  --muted: #230000;
-  --muted-foreground: #c56b77;
-  --accent: #f0f0f0;
-  --accent-foreground: #001014;
-  --destructive: #c56b77;
-  --destructive-foreground: #f0f0f0;
-  --border: #63384f;
-  --input: #63384f;
-  --ring: #ba7123;
-  --radius: 0.5rem;
+/* ========================================
+   NEO-BRUTALISM DESIGN SYSTEM
+   ======================================== */
 
-  /* 自定义渐变色变量 */
-  --gradient-primary: linear-gradient(135deg, #ba7123 0%, #523737 100%);
-  --gradient-secondary: linear-gradient(135deg, #554560 0%, #a89e4b 100%);
-  --gradient-accent: linear-gradient(135deg, #c56b77 0%, #a64b4b 100%);
-  --gradient-warm: linear-gradient(
-    135deg,
-    #ba7123 0%,
-    #a89e4b 50%,
-    #f0f0f0 100%
-  );
-  --gradient-dark: linear-gradient(
-    135deg,
-    #001014 0%,
-    #2c0f1e 50%,
-    #230000 100%
-  );
-  --gradient-cool: linear-gradient(
-    135deg,
-    #554560 0%,
-    #63384f 50%,
-    #c56b77 100%
-  );
-  --gradient-earth: linear-gradient(
-    135deg,
-    #54573d 0%,
-    #ba7123 50%,
-    #a89e4b 100%
-  );
+:root,
+.light,
+.light-theme {
+  /* Color Palette */
+  --bg-base: #f5f5f3;
+  --bg-panel: #fafaf8;
+  --bg-white: #ffffff;
+  --bg-secondary: #f0f0ee;
+
+  --text-primary: #000000;
+  --text-secondary: #666666;
+
+  --color-pink: #ff7aa3;
+  --color-yellow: #ffd966;
+  --color-blue: #6ba4ff;
+  --color-green: #5fe0a8;
+
+  --border-primary: #000000;
+  --border-light: #e0e0e0;
+
+  /* Override Radix UI variables for consistency */
+  --gray-1: #f5f5f3;
+  --gray-2: #fafaf8;
+  --gray-3: #f0f0ee;
+  --gray-12: #000000;
+
+  --accent-9: #ffd966;
+  --accent-10: #ffdd4d;
+  --accent-11: #000000;
+
+  /* Border Widths */
+  --border-thick: 3px;
+  --border-medium: 2px;
+  --border-thin: 1px;
+
+  /* Corner Radius */
+  --radius-xl: 20px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+
+  /* Shadows (Hard, No Blur) */
+  --shadow-lg: 6px 6px 0 rgba(0, 0, 0, 0.15);
+  --shadow-md: 4px 4px 0 rgba(0, 0, 0, 0.15);
+  --shadow-sm: 2px 2px 0 rgba(0, 0, 0, 0.15);
 }
 
-/* 移除暗色主题，统一使用温暖色调 */
-
 * {
-  border-color: var(--border);
+  box-sizing: border-box;
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-ibm-plex), 'Inter', 'Segoe UI', 'Helvetica', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 自定义渐变工具类 */
-.bg-gradient-primary {
-  background: var(--gradient-primary);
+/* Override Radix UI Themes styles for Neo-Brutalism */
+.radix-themes {
+  --default-font-family: var(--font-ibm-plex), 'Inter', 'Segoe UI', sans-serif;
 }
 
-.bg-gradient-secondary {
-  background: var(--gradient-secondary);
+/* Ensure Radix buttons follow Brutalist style */
+.rt-Button {
+  border: 3px solid var(--border-primary) !important;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.15) !important;
+  font-weight: 600 !important;
+  border-radius: 12px !important;
+  transition: all 0.1s ease !important;
 }
 
-.bg-gradient-accent {
-  background: var(--gradient-accent);
+.rt-Button:hover {
+  transform: translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15) !important;
 }
 
-.bg-gradient-warm {
-  background: var(--gradient-warm);
+.rt-Button:active {
+  transform: translate(4px, 4px) !important;
+  box-shadow: none !important;
 }
 
-.bg-gradient-dark {
-  background: var(--gradient-dark);
+/* Ensure Radix cards follow Brutalist style */
+.rt-Card {
+  border: 3px solid var(--border-primary) !important;
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15) !important;
+  border-radius: 20px !important;
 }
 
-.bg-gradient-cool {
-  background: var(--gradient-cool);
+/* ========================================
+   BRUTALIST COMPONENT CLASSES
+   ======================================== */
+
+/* Panels & Cards */
+.brutalist-card {
+  background-color: var(--bg-panel);
+  border: var(--border-thick) solid var(--border-primary);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
 }
 
-.bg-gradient-earth {
-  background: var(--gradient-earth);
+.brutalist-card-sm {
+  background-color: var(--bg-panel);
+  border: var(--border-thick) solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
 }
 
-/* 文字渐变工具类 */
-.text-gradient-primary {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Buttons */
+.brutalist-button {
+  padding: 12px 28px;
+  border: var(--border-thick) solid var(--border-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font-weight: 600;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.1s ease;
+  background-color: var(--color-yellow);
 }
 
-.text-gradient-secondary {
-  background: var(--gradient-secondary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.brutalist-button:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.15);
 }
 
-.text-gradient-accent {
-  background: var(--gradient-accent);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.brutalist-button:active {
+  transform: translate(4px, 4px);
+  box-shadow: none;
 }
 
-.text-gradient-warm {
-  background: var(--gradient-warm);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.brutalist-button-pink {
+  background-color: var(--color-pink);
 }
 
-.text-gradient-cool {
-  background: var(--gradient-cool);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.brutalist-button-blue {
+  background-color: var(--color-blue);
 }
 
-.text-gradient-earth {
-  background: var(--gradient-earth);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+.brutalist-button-green {
+  background-color: var(--color-green);
 }
 
-/* 深色调的阴影效果 */
-.shadow-warm {
-  box-shadow:
-    0 4px 6px -1px rgba(186, 113, 35, 0.2),
-    0 2px 4px -1px rgba(186, 113, 35, 0.1);
+/* Input Fields */
+.brutalist-input {
+  background-color: var(--bg-white);
+  border: var(--border-medium) solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  color: var(--text-primary);
+  font-size: 14px;
+  width: 100%;
 }
 
-.shadow-warm-lg {
-  box-shadow:
-    0 10px 15px -3px rgba(186, 113, 35, 0.2),
-    0 4px 6px -2px rgba(186, 113, 35, 0.1);
+.brutalist-input:focus {
+  outline: none;
+  border-color: var(--border-primary);
 }
 
-.shadow-warm-xl {
-  box-shadow:
-    0 20px 25px -5px rgba(186, 113, 35, 0.2),
-    0 10px 10px -5px rgba(186, 113, 35, 0.08);
+/* Badges */
+.brutalist-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: var(--radius-xs);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--text-primary);
 }
 
-/* 发光效果 */
-.glow-warm {
-  box-shadow: 0 0 20px rgba(222, 193, 109, 0.4);
+.brutalist-badge-blue {
+  background-color: var(--color-blue);
 }
 
-.glow-primary {
-  box-shadow: 0 0 20px rgba(186, 113, 35, 0.5);
+.brutalist-badge-green {
+  background-color: var(--color-green);
 }
 
-.glow-accent {
-  box-shadow: 0 0 20px rgba(197, 107, 119, 0.4);
+.brutalist-badge-yellow {
+  background-color: var(--color-yellow);
 }
 
-.glow-cool {
-  box-shadow: 0 0 20px rgba(85, 69, 96, 0.4);
+.brutalist-badge-queued {
+  background-color: var(--bg-white);
+  border: var(--border-medium) solid var(--border-primary);
+}
+
+/* Table */
+.brutalist-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.brutalist-table thead {
+  background-color: var(--bg-secondary);
+}
+
+.brutalist-table thead th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: var(--border-medium) solid var(--border-primary);
+}
+
+.brutalist-table tbody td {
+  padding: 16px;
+  border-bottom: var(--border-thin) solid var(--border-light);
+}
+
+.brutalist-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Stat Card */
+.brutalist-stat-card {
+  background-color: var(--bg-panel);
+  border: var(--border-thick) solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 24px;
+  text-align: center;
+}
+
+.brutalist-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.brutalist-stat-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Toggle Switch */
+.brutalist-toggle {
+  width: 60px;
+  height: 32px;
+  background-color: #999999;
+  border: var(--border-thick) solid var(--border-primary);
+  border-radius: 16px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.brutalist-toggle.active {
+  background-color: var(--color-green);
+}
+
+.brutalist-toggle-knob {
+  width: 20px;
+  height: 20px;
+  background-color: var(--border-primary);
+  border-radius: 50%;
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  transition: left 0.2s;
+}
+
+.brutalist-toggle.active .brutalist-toggle-knob {
+  left: 32px;
+}
+
+/* Typography */
+.brutalist-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+}
+
+.brutalist-heading {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.brutalist-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-primary);
+}
+
+.brutalist-text-secondary {
+  color: var(--text-secondary);
+}
+
+/* Container */
+.brutalist-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 20px;
 }
