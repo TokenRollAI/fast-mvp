@@ -4,6 +4,20 @@ AI MVP应用的通用template
 
 ---
 
+## 前置准备
+
+在Claude code中
+
+```
+# Add TokenRoll plugin marketplace
+/plugin marketplace add https://github.com/TokenRollAI/cc-plugin
+
+# Install tr plugin
+/plugin install tr@cc-plugin
+```
+
+重新启动claude code
+
 ## 项目结构与开发规范
 
 本项目遵循 Next.js (App Router) 的标准开发规范，旨在提高代码的可读性、可维护性和团队协作效率。
